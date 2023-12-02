@@ -50,4 +50,9 @@ app.use(express.urlencoded({ extended: true, limit: "16kb" }));
 app.use(express.static("public")); // configure static file to save images locally
 app.use(cookieParser());
 
+import healthcheckRouter from "./routes/healthcheck.routes.js";
+
+// * healthcheck
+app.use("/api/v1/healthcheck", healthcheckRouter);
+
 export { httpServer };
