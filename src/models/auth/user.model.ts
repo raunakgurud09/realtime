@@ -71,6 +71,8 @@ const userSchema = new Schema(
     emailVerificationExpiry: {
       type: Date,
     },
+
+    
   },
   { timestamps: true }
 );
@@ -81,7 +83,7 @@ userSchema.pre("save", async function (next) {
   next();
 });
 
-userSchema.methods.isPasswordCorrect = async function (password) {
+userSchema.methods.isPasswordCorrect = async function (password: string) {
   return await bcrypt.compare(password, this.password);
 };
 
@@ -93,7 +95,7 @@ userSchema.methods.generateAccessToken = function () {
       username: this.username,
       role: this.role,
     },
-    process.env.ACCESS_TOKEN_SECRET,
+    process.env.ACCESS_TOKEN_SECRET || "",
     { expiresIn: process.env.ACCESS_TOKEN_EXPIRY }
   );
 };
@@ -103,7 +105,7 @@ userSchema.methods.generateRefreshToken = function () {
     {
       _id: this._id,
     },
-    process.env.REFRESH_TOKEN_SECRET,
+    process.env.REFRESH_TOKEN_SECRET || "",
     { expiresIn: process.env.REFRESH_TOKEN_EXPIRY }
   );
 };
