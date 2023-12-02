@@ -7,8 +7,12 @@
   "license": "MIT",
   "scripts": {
     "start": "node index.js",
-    "dev":"nodemon -r dotenv/config --experimental-json-modules src/index.js",
+    "dev": "nodemon -r dotenv/config --experimental-json-modules src/index.js",
     "prepare": "node prepare.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/raunakgurud09/chat-applicaiton.git"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",
