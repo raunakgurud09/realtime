@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import { DB_NAME } from "../constants";
 
-export let dbInstance = undefined;
+export let dbInstance: typeof mongoose | undefined = undefined;
 
 const connectDB = async () => {
   try {

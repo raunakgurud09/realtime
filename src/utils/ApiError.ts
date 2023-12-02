@@ -1,4 +1,3 @@
-
 class ApiError extends Error {
   /**
    *
@@ -7,14 +6,15 @@ class ApiError extends Error {
    * @param {any[]} errors
    * @param {string} stack
    */
-  statusCode: any;
+  statusCode: number;
   message: string;
-  success: any;
+  success: boolean;
   data: any;
   errors: any;
+
   constructor(
-    statusCode,
-    message = "Something went wrong",
+    statusCode: number,
+    message: string = "Something went wrong",
     errors = [],
     stack = ""
   ) {

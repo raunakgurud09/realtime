@@ -5,6 +5,7 @@ import { rateLimit } from "express-rate-limit";
 import { createServer } from "http";
 import { Server } from "socket.io";
 import { ApiResponse } from "./utils/ApiResponse";
+import { ApiError } from "./utils/ApiError";
 
 const app = express();
 
@@ -52,9 +53,12 @@ app.use(express.static("public")); // configure static file to save images local
 app.use(cookieParser());
 
 import healthcheckRouter from "./routes/healthcheck.routes";
-import { ApiError } from "./utils/ApiError";
+import userRouter from "./routes/auth/user.routes";
 
 // * healthcheck
 app.use("/api/v1/healthcheck", healthcheckRouter);
+
+// * App apis
+app.use("/api/v1/users", userRouter);
 
 export { httpServer };
