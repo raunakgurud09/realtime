@@ -4,6 +4,7 @@ import cors from "cors";
 import { rateLimit } from "express-rate-limit";
 import { createServer } from "http";
 import { Server } from "socket.io";
+import { ApiResponse } from "./utils/ApiResponse";
 
 const app = express();
 
@@ -50,7 +51,8 @@ app.use(express.urlencoded({ extended: true, limit: "16kb" }));
 app.use(express.static("public")); // configure static file to save images locally
 app.use(cookieParser());
 
-import healthcheckRouter from "./routes/healthcheck.routes.js";
+import healthcheckRouter from "./routes/healthcheck.routes";
+import { ApiError } from "./utils/ApiError";
 
 // * healthcheck
 app.use("/api/v1/healthcheck", healthcheckRouter);
