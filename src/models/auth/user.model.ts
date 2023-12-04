@@ -1,14 +1,52 @@
 import bcrypt from "bcrypt";
 import crypto from "crypto";
 import jwt from "jsonwebtoken";
-import mongoose, { Schema } from "mongoose";
+import mongoose, { Document, Schema } from "mongoose";
 import {
   AvailableSocialLogins,
   AvailableUserRoles,
+  TUserLoginType,
+  TUserRolesEnum,
   USER_TEMPORARY_TOKEN_EXPIRY,
   UserLoginType,
   UserRolesEnum,
 } from "../../constants";
+
+interface IAvatar {
+  url: string;
+  localPath: string;
+}
+
+export interface UserInput extends Document {
+  avatar: {
+    type: IAvatar;
+    default: IAvatar;
+  };
+  username: string;
+  email: string;
+  role?: TUserRolesEnum;
+  password: string;
+  loginType: TUserLoginType;
+  isEmailVerified?: boolean;
+  refreshToken?: string;
+  forgotPasswordToken?: string;
+  forgotPasswordExpiry?: Date;
+  emailVerificationToken?: string;
+  emailVerificationExpiry?: Date;
+}
+
+export interface UserDocument extends UserInput, mongoose.Document {
+  createdAt: Date;
+  updatedAt: Date;
+  isPasswordCorrect(candidatePassword: string): Promise<Boolean>;
+  generateAccessToken(): {};
+  generateRefreshToken(): {};
+  generateTemporaryToken(): {
+    unHashedToken: string;
+    hashedToken: string;
+    tokenExpiry: string;
+  };
+}
 
 const userSchema = new Schema(
   {
