@@ -71,8 +71,6 @@ const userSchema = new Schema(
     emailVerificationExpiry: {
       type: Date,
     },
-
-    
   },
   { timestamps: true }
 );
