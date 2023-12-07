@@ -11,7 +11,31 @@ const app = express();
 
 const httpServer = createServer(app);
 
-const io = new Server(httpServer, {
+interface ServerToClientEvents {
+  noArg: () => void;
+  basicEmit: (a: number, b: string, c: Buffer) => void;
+  withAck: (d: string, callback: (e: number) => void) => void;
+}
+
+interface ClientToServerEvents {
+  hello: () => void;
+}
+
+interface InterServerEvents {
+  ping: () => void;
+}
+
+interface SocketData {
+  name: string;
+  age: number;
+}
+
+const io = new Server<
+  ClientToServerEvents,
+  ServerToClientEvents,
+  InterServerEvents,
+  SocketData
+>(httpServer, {
   pingTimeout: 60000,
   cors: {
     origin: process.env.CORS_ORIGIN,
@@ -54,11 +78,16 @@ app.use(cookieParser());
 
 import healthcheckRouter from "./routes/healthcheck.routes";
 import userRouter from "./routes/auth/user.routes";
+import chatRouter from "./routes/chat/chat.routes";
+import { initializeSocketIO } from "./socket";
 
 // * healthcheck
 app.use("/api/v1/healthcheck", healthcheckRouter);
 
 // * App apis
 app.use("/api/v1/users", userRouter);
+app.use("/api/v1/chats", chatRouter);
+
+initializeSocketIO(io);
 
 export { httpServer };
