@@ -172,3 +172,25 @@ export const availableUsers = asyncHandler(async (req, res) => {
 
   res.status(200).json(users);
 });
+
+export const getAllChats = asyncHandler(async (req, res) => {
+  const chats = await Chat.aggregate([
+    {
+      $match: {
+        participants: { $elemMatch: { $eq: req.user._id } }, // get all chats that have logged in user as a participant
+      },
+    },
+    {
+      $sort: {
+        updatedAt: -1,
+      },
+    },
+    ...chatCommonAggregation(),
+  ]);
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(200, chats || [], "User chats fetched successfully!")
+    );
+});

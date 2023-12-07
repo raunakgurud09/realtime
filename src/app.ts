@@ -4,38 +4,19 @@ import cors from "cors";
 import { rateLimit } from "express-rate-limit";
 import { createServer } from "http";
 import { Server } from "socket.io";
-import { ApiResponse } from "./utils/ApiResponse";
+import { initializeSocketIO } from "./socket";
 import { ApiError } from "./utils/ApiError";
+import dotenv from "dotenv"
+
+dotenv.config({
+  path: "./.env",
+});
 
 const app = express();
 
 const httpServer = createServer(app);
 
-interface ServerToClientEvents {
-  noArg: () => void;
-  basicEmit: (a: number, b: string, c: Buffer) => void;
-  withAck: (d: string, callback: (e: number) => void) => void;
-}
-
-interface ClientToServerEvents {
-  hello: () => void;
-}
-
-interface InterServerEvents {
-  ping: () => void;
-}
-
-interface SocketData {
-  name: string;
-  age: number;
-}
-
-const io = new Server<
-  ClientToServerEvents,
-  ServerToClientEvents,
-  InterServerEvents,
-  SocketData
->(httpServer, {
+const io = new Server(httpServer, {
   pingTimeout: 60000,
   cors: {
     origin: process.env.CORS_ORIGIN,
@@ -48,7 +29,7 @@ app.set("io", io);
 // global middlewares
 app.use(
   cors({
-    origin: process.env.CORS_ORIGIN,
+    origin: `${process.env.CORS_ORIGIN}`,
     credentials: true,
   })
 );
@@ -79,14 +60,17 @@ app.use(cookieParser());
 import healthcheckRouter from "./routes/healthcheck.routes";
 import userRouter from "./routes/auth/user.routes";
 import chatRouter from "./routes/chat/chat.routes";
-import { initializeSocketIO } from "./socket";
+import messageRouter from "./routes/chat/message.routes";
 
 // * healthcheck
 app.use("/api/v1/healthcheck", healthcheckRouter);
 
 // * App apis
 app.use("/api/v1/users", userRouter);
-app.use("/api/v1/chats", chatRouter);
+
+// * Chat routes
+app.use("/api/v1/chat-app/chats", chatRouter);
+app.use("/api/v1/chat-app/messages", messageRouter);
 
 initializeSocketIO(io);
 
