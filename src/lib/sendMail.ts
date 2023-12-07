@@ -3,16 +3,19 @@ import path from "path";
 import fs from "fs";
 import handlebars from "handlebars";
 
-const sendEmail = async (options: {
+const sendEmail = async ({
+  email,
+  subject,
+  mailgen,
+}: {
   email: string;
   subject: string;
   mailgen: any;
 }) => {
-  console.log(options.mailgen);
 
-  const emailTextual = `Hello ${options.mailgen.username}
+  const emailTextual = `Hello ${mailgen.username}
   This is to verify your email click on the link 
-  ${options.mailgen.verifyEmail}`;
+  ${mailgen.verifyEmail}`;
 
   const filePath = path.join(
     __dirname,
@@ -22,8 +25,10 @@ const sendEmail = async (options: {
   const template = handlebars.compile(source);
 
   const replacements = {
-    email: options.mailgen.email,
-    verifyEmail: options.mailgen?.verifyEmail,
+    name: mailgen.username,
+    intro: mailgen.intro,
+    verificationUrl: mailgen.verificationUrl,
+    outro: mailgen.outro,
   };
 
   // Generate an HTML email with the provided contents
@@ -42,14 +47,13 @@ const sendEmail = async (options: {
 
   const mail = {
     from: process.env.GMAIL_SMTP_USER, // We can name this anything. The mail will go to your Mailtrap inbox
-    to: options.email, // receiver's mail
-    subject: options.subject, // mail subject
+    to: email, // receiver's mail
+    subject: subject, // mail subject
     text: emailTextual, // mailgen content textual variant
     html: emailHtml, // mailgen content html variant
   };
 
   try {
-    console.log("sent")
     await transporter.sendMail(mail);
   } catch (error) {
     console.log(
@@ -64,21 +68,11 @@ const emailVerificationMailgenContent = (
   verificationUrl: string
 ) => {
   return {
-    body: {
-      name: username,
-      intro: "Welcome to our app! We're very excited to have you on board.",
-      action: {
-        instructions:
-          "To verify your email please click on the following button:",
-        button: {
-          color: "#22BC66", // Optional action button color
-          text: "Verify your email",
-          link: verificationUrl,
-        },
-      },
-      outro:
-        "Need help, or have questions? Just reply to this email, we'd love to help.",
-    },
+    name: username,
+    intro: `Hello ${username} Welcome to our app! We're very excited to have you on board. This is to verify your email \n  click on the link below`,
+    verificationUrl,
+    outro:
+      "Need help, or have questions? Just reply to this email, we'd love to help.",
   };
 };
 

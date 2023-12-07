@@ -220,12 +220,42 @@ export const verifyEmail: any = asyncHandler(
   }
 );
 
-export const getCurrentUser = asyncHandler(
-  async (req: any, res: Response) => {
-    return res
-      .status(200)
-      .json(
-        new ApiResponse(200, req.user, "Current user fetched successfully")
-      );
+export const getCurrentUser = asyncHandler(async (req: any, res: Response) => {
+  return res
+    .status(200)
+    .json(new ApiResponse(200, req.user, "Current user fetched successfully"));
+});
+
+export const resendEmailVerification = asyncHandler(async (req, res) => {
+  const user: any = await User.findById(req.user?._id);
+
+  if (!user) {
+    throw new ApiError(404, "User does not exists", []);
   }
-);
+
+  // if email is already verified throw an error
+  if (user.isEmailVerified) {
+    throw new ApiError(409, "Email is already verified!");
+  }
+
+  const { unHashedToken, hashedToken, tokenExpiry } =
+    user.generateTemporaryToken(); // generate email verification creds
+
+  user.emailVerificationToken = hashedToken;
+  user.emailVerificationExpiry = tokenExpiry;
+  await user.save({ validateBeforeSave: false });
+
+  await sendEmail({
+    email: user?.email,
+    subject: "Please verify your email",
+    mailgen: emailVerificationMailgenContent(
+      user.username,
+      `${req.protocol}://${req.get(
+        "host"
+      )}/api/v1/users/verify-email/${unHashedToken}`
+    ),
+  });
+  return res
+    .status(200)
+    .json(new ApiResponse(200, {}, "Mail has been sent to your mail ID"));
+});
