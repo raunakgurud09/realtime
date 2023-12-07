@@ -5,10 +5,18 @@ export const registerSchema = z.object({
   body: z.object({
     // email should be valid and non-empty
     email: z.string().email().trim(),
-    username:z.string().toLowerCase().min(3),
+    username: z.string().toLowerCase().min(3),
     // password should be at least 6 characters
     password: z.string().min(6),
-    role:z.enum(["ADMIN","USER"]).optional()
+    role: z.enum(["ADMIN", "USER"]).optional(),
+  }),
+});
+
+export const loginSchema = z.object({
+  body: z.object({
+    email: z.string().email().trim().optional(),
+    username: z.string().trim().optional(),
+    password: z.string().trim(),
   }),
 });
 

@@ -1,7 +1,8 @@
 import { NextFunction, Response, Request } from "express";
 
 export const validate =
-  (schema: any) => (req: Request, res: Response, next: NextFunction) => {
+  (schema: any): any =>
+  (req: Request, res: Response, next: NextFunction) => {
     try {
       schema.parse({
         body: req.body,
