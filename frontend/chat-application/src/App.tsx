@@ -1,34 +1,50 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { Route, Routes } from "react-router-dom"
+import { PublicRoute } from "./components/PublicRoute"
+import { Login } from "./pages/Login"
+import { Register } from "./pages/Register"
+import { Chat } from "./pages/Chat"
 
 function App() {
-  const [count, setCount] = useState(0)
 
   return (
-    <>
-      <div className='flex flex-row items-center justify-center'>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1 className='text-8xl'>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <Routes>
+
+      {/* private route */}
+      <Route
+        path="/chat"
+        element={
+          <Chat />
+        }
+      >
+      </Route>
+
+      {/* login route  */}
+      <Route
+        path="/login"
+        element={
+          <PublicRoute>
+            <Login />
+          </PublicRoute>
+        }
+      >
+      </Route>
+
+      {/* register route  */}
+      <Route
+        path="/login"
+        element={
+          <PublicRoute>
+            <Register />
+          </PublicRoute>
+        }
+      >
+      </Route>
+
+
+
+      {/* All unwanted routes */}
+      <Route path="*" element={<p>404 Not found</p>} />
+    </Routes>
   )
 }
 
