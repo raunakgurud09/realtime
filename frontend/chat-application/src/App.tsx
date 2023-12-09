@@ -1,8 +1,9 @@
 import { Route, Routes } from "react-router-dom"
 import { PublicRoute } from "./components/PublicRoute"
-import { Login } from "./pages/Login"
 import { Register } from "./pages/Register"
 import { Chat } from "./pages/Chat"
+import { PrivateRoute } from "./components/PrivateRoute"
+import { Login } from "./pages/Login"
 
 function App() {
 
@@ -13,7 +14,9 @@ function App() {
       <Route
         path="/chat"
         element={
-          <Chat />
+          <PrivateRoute>
+            <Chat />
+          </PrivateRoute>
         }
       >
       </Route>
@@ -31,7 +34,7 @@ function App() {
 
       {/* register route  */}
       <Route
-        path="/login"
+        path="/register"
         element={
           <PublicRoute>
             <Register />

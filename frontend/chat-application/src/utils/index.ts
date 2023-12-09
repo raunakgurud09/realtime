@@ -9,6 +9,7 @@ export const requestHandler = async (
 ) => {
   // Show loading state if setLoading function is provided
   setLoading && setLoading(true);
+  console.log("worked")
   try {
     // Make the API request
     const response = await api();
@@ -31,3 +32,8 @@ export const requestHandler = async (
 };
 
 export const isBrowser = typeof window !== "undefined";
+
+export const classNames = (...className: string[]) => {
+  // Filter out any empty class names and join them with a space
+  return className.filter(Boolean).join(" ");
+};
