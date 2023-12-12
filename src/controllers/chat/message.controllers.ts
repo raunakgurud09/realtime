@@ -75,8 +75,6 @@ export const sendMessage = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Message content or attachment is required");
   }
 
-  console.log(req.body)
-
   const selectedChat = await Chat.findById(chatId);
 
   if (!selectedChat) {
@@ -124,7 +122,6 @@ export const sendMessage = asyncHandler(async (req, res) => {
     ...chatMessageCommonAggregation(),
   ]);
 
-  console.log(message);
   // Store the aggregation result
   const receivedMessage = messages[0];
 

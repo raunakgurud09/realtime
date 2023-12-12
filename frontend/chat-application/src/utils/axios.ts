@@ -21,7 +21,7 @@ apiClient.interceptors.request.use(
 );
 
 export const loginUser = (data: { username: string; password: string }) => {
-  console.log('hello')
+  console.log("hello");
   return apiClient.post("/users/login", data);
 };
 
@@ -31,4 +31,21 @@ export const registerUser = (data: { username: string; password: string }) => {
 
 export const logoutUser = () => {
   return apiClient.post("/users/logout");
+};
+
+export const getUserChats = () => {
+  return apiClient.get("/chat-app/chats/");
+};
+
+export const getChatMessage = (chatId: string) => {
+  return apiClient.get(`/chat-app/messages/${chatId}`);
+};
+
+export const sendMessage = (chatId: string, message: string) => {
+  console.log('working')
+  return apiClient.post(`/chat-app/messages/${chatId}`, { content: message });
+};
+
+export const deleteOneOnOneChat = (chatId: string) => {
+  return apiClient.delete(`/chat-app/chats/remove/${chatId}`);
 };

@@ -147,13 +147,13 @@ export const createOrGetAOneOnOneChat = asyncHandler(
 
     res
       .status(201)
-      .json(new ApiResponse(201, newChat, "Chat created and retrieved successfully"));
+      .json(
+        new ApiResponse(201, newChat, "Chat created and retrieved successfully")
+      );
   }
 );
 
 export const availableUsers = asyncHandler(async (req, res) => {
-  console.log("working");
-
   const users = await User.aggregate([
     {
       $match: {
@@ -170,7 +170,9 @@ export const availableUsers = asyncHandler(async (req, res) => {
     },
   ]);
 
-  res.status(200).json(users);
+  res
+    .status(200)
+    .json(new ApiResponse(200, users, "Users fetched successfully"));
 });
 
 export const getAllChats = asyncHandler(async (req, res) => {

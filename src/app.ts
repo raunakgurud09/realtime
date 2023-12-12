@@ -6,7 +6,7 @@ import { createServer } from "http";
 import { Server } from "socket.io";
 import { initializeSocketIO } from "./socket";
 import { ApiError } from "./utils/ApiError";
-import dotenv from "dotenv"
+import dotenv from "dotenv";
 
 dotenv.config({
   path: "./.env",
@@ -19,7 +19,7 @@ const httpServer = createServer(app);
 const io = new Server(httpServer, {
   pingTimeout: 60000,
   cors: {
-    origin: process.env.CORS_ORIGIN,
+    origin: [process.env.CORS_ORIGIN, "http://localhost:3000"],
     credentials: true,
   },
 });
@@ -29,7 +29,7 @@ app.set("io", io);
 // global middlewares
 app.use(
   cors({
-    origin: `${process.env.CORS_ORIGIN}`,
+    origin: [process.env.CORS_ORIGIN, "http://localhost:3000"],
     credentials: true,
   })
 );

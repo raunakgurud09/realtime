@@ -10,7 +10,7 @@ const router = Router();
 router.use(verifyJWT);
 
 router.route('/').get(getAllChats)
-router.route('/available-users').get(availableUsers)
+router.route('/users').get(availableUsers)
 
 router
   .route("/c/:receiverId")
