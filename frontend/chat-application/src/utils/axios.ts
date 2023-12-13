@@ -41,9 +41,13 @@ export const getChatMessage = (chatId: string) => {
   return apiClient.get(`/chat-app/messages/${chatId}`);
 };
 
-export const sendMessage = (chatId: string, message: string) => {
-  console.log('working')
-  return apiClient.post(`/chat-app/messages/${chatId}`, { content: message });
+export const sendMessage = (chatId: string, content: string) => {
+  const formData = new FormData()
+
+  if (content) {
+    formData.append("content", content);
+  }
+  return apiClient.post(`/chat-app/messages/${chatId}`, formData);
 };
 
 export const deleteOneOnOneChat = (chatId: string) => {

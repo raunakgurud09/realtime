@@ -27,6 +27,21 @@ a:hover {
   color: #535bf2;
 }
 
+::-webkit-scrollbar {
+  width: 10px;
+  height: 0px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-background-900);
+  /* background: white; */
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 6px;
+  /* border: 3px solid var(--color-background-900); */
+  background: #565352;
+}
 
 
 
@@ -72,3 +87,18 @@ a:hover {
   }
 }
 
+
+.animation1 {
+  animation: bounce 0.4s ease-in-out infinite alternate;
+  animation-delay: -0.4s;
+}
+
+.animation2 {
+  animation: bounce 0.4s ease-in-out infinite alternate;
+  animation-delay: -0.2s;
+}
+
+.animation3 {
+  animation: bounce 0.4s ease-in-out infinite alternate;
+  animation-delay: 0s;
+}

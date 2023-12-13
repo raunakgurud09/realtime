@@ -1,11 +1,9 @@
-//@ts-nocheck
 import cookie from "cookie";
-import { ChatEventEnum } from "../constants";
-import { Socket as socket } from "socket.io";
-import { ApiError } from "../utils/ApiError";
 import jwt from "jsonwebtoken";
+import { Server, Socket } from "socket.io";
+import { AvailableChatEvents, ChatEventEnum } from "../constants";
+import { ApiError } from "../utils/ApiError";
 import { User } from "../models/auth/user.model";
-
 
 /**
  * @description This function is responsible to allow user to join the chat represented by chatId (chatId). event happens when user switches between the chats
@@ -45,7 +43,7 @@ const mountParticipantStoppedTypingEvent = (socket) => {
  *
  * @param {Server<import("socket.io/dist/typed-events").DefaultEventsMap, import("socket.io/dist/typed-events").DefaultEventsMap, import("socket.io/dist/typed-events").DefaultEventsMap, any>} io
  */
-export const initializeSocketIO = (io) => {
+const initializeSocketIO = (io) => {
   return io.on("connection", async (socket) => {
     try {
       // parse the cookies from the handshake headers (This is only possible if client has `withCredentials: true`)
@@ -63,7 +61,10 @@ export const initializeSocketIO = (io) => {
         throw new ApiError(401, "Un-authorized handshake. Token is missing");
       }
 
-      const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET); // decode the token
+      const decodedToken: any = jwt.verify(
+        token,
+        process.env.ACCESS_TOKEN_SECRET
+      ); // decode the token
 
       const user = await User.findById(decodedToken?._id).select(
         "-password -refreshToken -emailVerificationToken -emailVerificationExpiry"
@@ -110,7 +111,8 @@ export const initializeSocketIO = (io) => {
  * @param {any} payload - Data that should be sent when emitting the event
  * @description Utility function responsible to abstract the logic of socket emission via the io instance
  */
-export const emitSocketEvent = (req, roomId, event, payload) => {
+const emitSocketEvent = (req, roomId, event, payload) => {
   req.app.get("io").in(roomId).emit(event, payload);
 };
 
+export { initializeSocketIO, emitSocketEvent };

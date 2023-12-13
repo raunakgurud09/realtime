@@ -1,30 +1,31 @@
+/* eslint-disable react-refresh/only-export-components */
+import React, { createContext, useContext, useEffect, useState } from "react";
 import socketio from "socket.io-client";
-import { LocalStorage } from "../utils/LocalStorage"
-import { createContext, useContext, useEffect, useState } from "react";
+import { LocalStorage } from "../utils/LocalStorage";
 
+// Function to establish a socket connection with authorization token
+const getSocket = () => {
+  const token = LocalStorage.get("token"); // Retrieve jwt token from local storage or cookie
 
-
-
-export const getSocket = () => {
-  const token = LocalStorage.get("token")
-
-  return socketio(import.meta.env.VITE_SOCKET_SERVER, {
+  // Create a socket connection with the provided URI and authentication
+  return socketio(import.meta.env.VITE_SOCKET_URI, {
     withCredentials: true,
     auth: { token },
-  })
-}
+  });
+};
+
 // Create a context to hold the socket instance
 const SocketContext = createContext<{
-  socket: ReturnType<typeof socketio> | null
+  socket: ReturnType<typeof socketio> | null;
 }>({
   socket: null,
 });
 
 // Custom hook to access the socket instance from the context
-export const useSocket = () => useContext(SocketContext);
+const useSocket = () => useContext(SocketContext);
 
-
-export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
+// SocketProvider component to manage the socket instance and provide it through context
+const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   // State to store the socket instance
@@ -44,3 +45,6 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
     </SocketContext.Provider>
   );
 };
+
+// Export the SocketProvider component and the useSocket hook for other components to use
+export { SocketProvider, useSocket };
