@@ -1,9 +1,9 @@
 import { Route, Routes } from "react-router-dom"
 import { PublicRoute } from "./components/PublicRoute"
 import { Register } from "./pages/Register"
-import { Chat } from "./pages/Chat"
 import { PrivateRoute } from "./components/PrivateRoute"
 import { Login } from "./pages/Login"
+import { Chat } from "./pages/chat"
 
 function App() {
 
