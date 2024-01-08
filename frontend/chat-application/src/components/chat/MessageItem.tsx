@@ -18,7 +18,7 @@ const MessageItem: React.FC<{
   return (
     <>
       {resizedImage ? (
-        <div className="h-full z-40 p-8 overflow-hidden w-full absolute inset-0 bg-black/70 flex justify-center items-center">
+        <div className="h-full z-40 p-8 overflow-hidden w-full absolute inset-0 bg-black flex justify-center items-center">
           {/* <XMarkIcon
             className="absolute top-5 right-5 w-9 h-9 text-white cursor-pointer"
             onClick={() => setResizedImage(null)}
@@ -47,8 +47,8 @@ const MessageItem: React.FC<{
           className={classNames(
             "p-4 rounded-3xl flex flex-col",
             isOwnMessage
-              ? "order-1 rounded-br-none bg-primary"
-              : "order-2 rounded-bl-none bg-secondary"
+              ? "order-1 rounded-br-none bg-black/15"
+              : "order-2 rounded-bl-none bg-black/15"
           )}
         >
           {isGroupChatMessage && !isOwnMessage ? (

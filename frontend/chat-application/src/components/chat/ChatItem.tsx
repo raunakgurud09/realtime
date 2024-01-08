@@ -1,12 +1,7 @@
-// import {
-//   EllipsisVerticalIcon,
-//   PaperClipIcon,
-//   TrashIcon,
-// } from "@heroicons/react/20/solid";
-// import { InformationCircleIcon } from "@heroicons/react/24/outline";
-
 import moment from "moment";
 import React, { useState } from "react";
+import { HiDotsVertical } from "react-icons/hi";
+
 import { deleteOneOnOneChat } from "../../utils/axios";
 import { useAuth } from "../../context/AuthContext";
 import { ChatListItemInterface } from "../../interface/chat";
@@ -42,14 +37,14 @@ const ChatItem: React.FC<{
 
   return (
     <>
-    
+
       <div
         role="button"
         onClick={() => onClick(chat)}
         onMouseLeave={() => setOpenOptions(false)}
         className={classNames(
           "group p-4 my-2 flex justify-between gap-3 items-start cursor-pointer rounded-3xl hover:bg-secondary",
-          isActive ? "border-[1px] border-zinc-500 bg-secondary" : "",
+          isActive ? "border-[1px] border-zinc-500 bg-zinc-800" : "",
           unreadCount > 0
             ? "border-[1px] border-success bg-success/20 font-bold"
             : ""
@@ -62,7 +57,9 @@ const ChatItem: React.FC<{
           }}
           className="self-center p-1 relative"
         >
-          <p className="h-6 group-hover:w-6 group-hover:opacity-100 w-0 opacity-0 transition-all ease-in-out duration-100 text-zinc-300" />
+          <p className="mr-2 h-6 group-hover:w-3 group-hover:opacity-100 w-0 transition-all ease-in-out duration-100 text-zinc-300" >
+            <HiDotsVertical size={20} />
+          </p>
           <div
             className={classNames(
               "z-20 text-left absolute bottom-0 translate-y-full text-sm w-52 bg-dark rounded-2xl p-2 shadow-md border-[1px] border-secondary",
@@ -77,6 +74,7 @@ const ChatItem: React.FC<{
                 role="button"
                 className="p-4 w-full rounded-lg inline-flex items-center hover:bg-secondary"
               >
+
                 <p className="h-4 w-4 mr-2" /> About group
               </p>
             ) : (
@@ -112,10 +110,10 @@ const ChatItem: React.FC<{
                       i === 0
                         ? "left-0 z-[3]"
                         : i === 1
-                        ? "left-2.5 z-[2]"
-                        : i === 2
-                        ? "left-[18px] z-[1]"
-                        : ""
+                          ? "left-2.5 z-[2]"
+                          : i === 2
+                            ? "left-[18px] z-[1]"
+                            : ""
                     )}
                   />
                 );
