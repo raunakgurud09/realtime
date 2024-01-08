@@ -1,7 +1,12 @@
 
 import { useEffect, useRef, useState } from "react";
 import { getChatMessages, getUserChats, sendMessage } from "../utils/axios";
-// import AddChatModal from "../components/chat/AddChatModal";
+import { LuMessageSquarePlus } from "react-icons/lu";
+import { HiDotsVertical } from "react-icons/hi";
+import { IoMdSend } from "react-icons/io";
+
+
+
 import ChatItem from "../components/chat/ChatItem";
 import MessageItem from "../components/chat/MessageItem";
 import Typing from "../components/chat/Typing";
@@ -16,6 +21,7 @@ import {
 } from "../utils";
 import { ChatListItemInterface, ChatMessageInterface } from "../interface/chat";
 import { LocalStorage } from "../utils/LocalStorage";
+// import AddChatModal from "../components/chat/AddChatModal";
 
 const CONNECTED_EVENT = "connected";
 const DISCONNECT_EVENT = "disconnect";
@@ -26,41 +32,35 @@ const STOP_TYPING_EVENT = "stopTyping";
 const MESSAGE_RECEIVED_EVENT = "messageReceived";
 const LEAVE_CHAT_EVENT = "leaveChat";
 const UPDATE_GROUP_NAME_EVENT = "updateGroupName";
-// const SOCKET_ERROR_EVENT = "socketError";
 
 export const Chat = () => {
-  // Import the 'useAuth' and 'useSocket' hooks from their respective contexts
   const { user } = useAuth();
   const { socket } = useSocket();
 
-  // Create a reference using 'useRef' to hold the currently selected chat.
-  // 'useRef' is used here because it ensures that the 'currentChat' value within socket event callbacks
-  // will always refer to the latest value, even if the component re-renders.
   const currentChat = useRef<ChatListItemInterface | null>(null);
 
-  // To keep track of the setTimeout function
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Define state variables and their initial values using 'useState'
-  const [isConnected, setIsConnected] = useState(false); // For tracking socket connection
+  // const [openAddChat, setOpenAddChat] = useState(false)
 
-  // const [openAddChat, setOpenAddChat] = useState(false); // To control the 'Add Chat' modal
-  const [loadingChats, setLoadingChats] = useState(false); // To indicate loading of chats
-  const [loadingMessages, setLoadingMessages] = useState(false); // To indicate loading of messages
+  const [isConnected, setIsConnected] = useState(false);
 
-  const [chats, setChats] = useState<ChatListItemInterface[]>([]); // To store user's chats
-  const [messages, setMessages] = useState<ChatMessageInterface[]>([]); // To store chat messages
+  const [loadingChats, setLoadingChats] = useState(false);
+  const [loadingMessages, setLoadingMessages] = useState(false);
+
+  const [chats, setChats] = useState<ChatListItemInterface[]>([]);
+  const [messages, setMessages] = useState<ChatMessageInterface[]>([]);
   const [unreadMessages, setUnreadMessages] = useState<ChatMessageInterface[]>(
     []
-  ); // To track unread messages
+  );
 
-  const [isTyping, setIsTyping] = useState(false); // To track if someone is currently typing
-  const [selfTyping, setSelfTyping] = useState(false); // To track if the current user is typing
+  const [isTyping, setIsTyping] = useState(false);
+  const [selfTyping, setSelfTyping] = useState(false);
 
-  const [message, setMessage] = useState(""); // To store the currently typed message
-  const [localSearchQuery, setLocalSearchQuery] = useState(""); // For local search functionality
+  const [message, setMessage] = useState("");
+  const [localSearchQuery, setLocalSearchQuery] = useState("");
 
-  const [attachedFiles, setAttachedFiles] = useState<File[]>([]); // To store files attached to messages
+  const [attachedFiles, setAttachedFiles] = useState<File[]>([]);
 
   /**
    *  A  function to update the last message of a specified chat to update the chat list
@@ -283,10 +283,8 @@ export const Chat = () => {
   };
 
   useEffect(() => {
-    // Fetch the chat list from the server.
     getChats();
 
-    // Retrieve the current chat details from local storage.
     const _currentChat = LocalStorage.get("currentChat");
 
     // If there's a current chat saved in local storage:
@@ -303,28 +301,17 @@ export const Chat = () => {
 
   // This useEffect handles the setting up and tearing down of socket event listeners.
   useEffect(() => {
-    // If the socket isn't initialized, we don't set up listeners.
     if (!socket) return;
 
-    // Set up event listeners for various socket events:
-    // Listener for when the socket connects.
     socket.on(CONNECTED_EVENT, onConnect);
-    // Listener for when the socket disconnects.
     socket.on(DISCONNECT_EVENT, onDisconnect);
-    // Listener for when a user is typing.
     socket.on(TYPING_EVENT, handleOnSocketTyping);
-    // Listener for when a user stops typing.
     socket.on(STOP_TYPING_EVENT, handleOnSocketStopTyping);
-    // Listener for when a new message is received.
     socket.on(MESSAGE_RECEIVED_EVENT, onMessageReceived);
-    // Listener for the initiation of a new chat.
     socket.on(NEW_CHAT_EVENT, onNewChat);
-    // Listener for when a user leaves a chat.
     socket.on(LEAVE_CHAT_EVENT, onChatLeave);
-    // Listener for when a group's name is updated.
     socket.on(UPDATE_GROUP_NAME_EVENT, onGroupNameChange);
 
-    // When the component using this hook unmounts or if `socket` or `chats` change:
     return () => {
       // Remove all the event listeners we set up to avoid memory leaks and unintended behaviors.
       socket.off(CONNECTED_EVENT, onConnect);
@@ -337,13 +324,6 @@ export const Chat = () => {
       socket.off(UPDATE_GROUP_NAME_EVENT, onGroupNameChange);
     };
 
-    // Note:
-    // The `chats` array is used in the `onMessageReceived` function.
-    // We need the latest state value of `chats`. If we don't pass `chats` in the dependency array,
-    // the `onMessageReceived` will consider the initial value of the `chats` array, which is empty.
-    // This will not cause infinite renders because the functions in the socket are getting mounted and not executed.
-    // So, even if some socket callbacks are updating the `chats` state, it's not
-    // updating on each `useEffect` call but on each socket call.
   }, [socket, chats]);
 
   return (
@@ -358,8 +338,29 @@ export const Chat = () => {
         }}
       /> */}
 
-      <div className="w-full justify-between items-stretch h-screen flex flex-shrink-0">
-        <div className="w-1/3 relative ring-white overflow-y-auto px-4">
+      <div className="w-full justify-between items-stretch h-screen flex flex-shrink-0 overflow-y-hidden">
+        <div className="w-3/12 relative ring-white overflow-y-auto px-4">
+          <div className="h-20 flex justify-between  items-center flex-row">
+            <img
+              className="h-10 w-10 rounded-full flex flex-shrink-0 object-cover"
+              src={user?.avatar.url}
+              alt="user"
+            />
+            <div className="flex flex-row justify-center items-center gap-1">
+              <button
+                // onClick={() => setOpenAddChat(true)}
+                className="rounded-full border-none hover:bg-blue-200/5 text-white p-3 flex flex-shrink-0"
+              >
+                <LuMessageSquarePlus size={20} />
+              </button>
+              <button
+                // onClick={() => setOpenAddChat(true)}
+                className="rounded-full border-none hover:bg-blue-200/5 text-white p-3 flex flex-shrink-0"
+              >
+                <HiDotsVertical size={20} />
+              </button>
+            </div>
+          </div>
           <div className="z-10 w-full sticky top-0 bg-dark py-4 flex justify-between items-center gap-4">
             <Input
               placeholder="Search user or group..."
@@ -368,12 +369,7 @@ export const Chat = () => {
                 setLocalSearchQuery(e.target.value.toLowerCase())
               }
             />
-            <button
-              // onClick={() => setOpenAddChat(true)}
-              className="rounded-xl border-none bg-primary text-white py-4 px-5 flex flex-shrink-0"
-            >
-              + Add chat
-            </button>
+
           </div>
           {loadingChats ? (
             <div className="flex justify-center items-center h-[calc(100%-88px)]">
@@ -387,10 +383,10 @@ export const Chat = () => {
                 // If there's a localSearchQuery, filter chats that contain the query in their metadata title
                 localSearchQuery
                   ? getChatObjectMetadata(chat, user!)
-                      .title?.toLocaleLowerCase()
-                      ?.includes(localSearchQuery)
+                    .title?.toLocaleLowerCase()
+                    ?.includes(localSearchQuery)
                   : // If there's no localSearchQuery, include all chats
-                    true
+                  true
               )
               .map((chat) => {
                 return (
@@ -426,10 +422,10 @@ export const Chat = () => {
               })
           )}
         </div>
-        <div className="w-2/3 border-l-[0.1px] border-secondary">
+        <div className="w-9/12 border-l-[0.1px] border-white/20">
           {currentChat.current && currentChat.current?._id ? (
             <>
-              <div className="p-4 sticky top-0 bg-dark z-20 flex justify-between items-center w-full border-b-[0.1px] border-secondary">
+              <div className="p-4 sticky top-0 bg-dark z-20 flex justify-between items-center w-full border-b-[0.1px] border-white/20">
                 <div className="flex justify-start items-center w-max gap-3">
                   {currentChat.current.isGroupChat ? (
                     <div className="w-12 relative h-12 flex-shrink-0 flex justify-start items-center flex-nowrap">
@@ -441,14 +437,14 @@ export const Chat = () => {
                               key={participant._id}
                               src={participant.avatar.url}
                               className={classNames(
-                                "w-9 h-9 border-[1px] border-white rounded-full absolute outline outline-4 outline-dark",
+                                "w-9 h-9 border-[0.1px] border-white/20 rounded-full absolute outline outline-4 outline-dark",
                                 i === 0
                                   ? "left-0 z-30"
                                   : i === 1
-                                  ? "left-2 z-20"
-                                  : i === 2
-                                  ? "left-4 z-10"
-                                  : ""
+                                    ? "left-2 z-20"
+                                    : i === 2
+                                      ? "left-4 z-10"
+                                      : ""
                               )}
                             />
                           );
@@ -472,6 +468,7 @@ export const Chat = () => {
                           .description
                       }
                     </small>
+                    <div className="text-xs">{isTyping ? <p>Typing...</p> : null}</div>
                   </div>
                 </div>
               </div>
@@ -534,7 +531,7 @@ export const Chat = () => {
                   })}
                 </div>
               ) : null}
-              <div className="sticky top-full p-4 flex justify-between items-center w-full gap-2 border-t-[0.1px] border-secondary">
+              <div className="sticky top-full p-4 flex justify-between items-center w-full gap-2 border-t-[0.1px] border-white/20">
                 <input
                   hidden
                   id="attachments"
@@ -571,6 +568,7 @@ export const Chat = () => {
                   className="p-4 rounded-full bg-dark hover:bg-secondary disabled:opacity-50"
                 >
                   {/* <PaperAirplaneIcon className="w-6 h-6" /> */}
+                  <IoMdSend size={30}/>
                 </button>
               </div>
             </>
