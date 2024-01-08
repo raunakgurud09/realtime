@@ -1,10 +1,12 @@
 
 import { useEffect, useRef, useState } from "react";
 import { getChatMessages, getUserChats, sendMessage } from "../utils/axios";
+
 import { LuMessageSquarePlus } from "react-icons/lu";
 import { HiDotsVertical } from "react-icons/hi";
 import { IoMdSend } from "react-icons/io";
-
+import { GoPaperclip } from "react-icons/go";
+import { MdVideoCall } from "react-icons/md";
 
 
 import ChatItem from "../components/chat/ChatItem";
@@ -426,49 +428,54 @@ export const Chat = () => {
           {currentChat.current && currentChat.current?._id ? (
             <>
               <div className="p-4 sticky top-0 bg-dark z-20 flex justify-between items-center w-full border-b-[0.1px] border-white/20">
-                <div className="flex justify-start items-center w-max gap-3">
-                  {currentChat.current.isGroupChat ? (
-                    <div className="w-12 relative h-12 flex-shrink-0 flex justify-start items-center flex-nowrap">
-                      {currentChat.current.participants
-                        .slice(0, 3)
-                        .map((participant, i) => {
-                          return (
-                            <img
-                              key={participant._id}
-                              src={participant.avatar.url}
-                              className={classNames(
-                                "w-9 h-9 border-[0.1px] border-white/20 rounded-full absolute outline outline-4 outline-dark",
-                                i === 0
-                                  ? "left-0 z-30"
-                                  : i === 1
-                                    ? "left-2 z-20"
-                                    : i === 2
-                                      ? "left-4 z-10"
-                                      : ""
-                              )}
-                            />
-                          );
-                        })}
+                <div className="flex justify-between  items-center w-full gap-3">
+                  <div className="flex justify-between items-center w-max gap-3">
+                    {currentChat.current.isGroupChat ? (
+                      <div className="w-12 relative h-12 flex-shrink-0 flex justify-start items-center flex-nowrap">
+                        {currentChat.current.participants
+                          .slice(0, 3)
+                          .map((participant, i) => {
+                            return (
+                              <img
+                                key={participant._id}
+                                src={participant.avatar.url}
+                                className={classNames(
+                                  "w-9 h-9 border-[0.1px] border-white/20 rounded-full absolute outline outline-4 outline-dark",
+                                  i === 0
+                                    ? "left-0 z-30"
+                                    : i === 1
+                                      ? "left-2 z-20"
+                                      : i === 2
+                                        ? "left-4 z-10"
+                                        : ""
+                                )}
+                              />
+                            );
+                          })}
+                      </div>
+                    ) : (
+                      <img
+                        className="h-14 w-14 rounded-full flex flex-shrink-0 object-cover"
+                        src={
+                          getChatObjectMetadata(currentChat.current, user!).avatar
+                        }
+                      />
+                    )}
+                    <div>
+                      <p className="font-bold">
+                        {getChatObjectMetadata(currentChat.current, user!).title}
+                      </p>
+                      <small className="text-zinc-400">
+                        {
+                          getChatObjectMetadata(currentChat.current, user!)
+                            .description
+                        }
+                      </small>
+                      <div className="text-xs">{isTyping ? <p>Typing...</p> : null}</div>
                     </div>
-                  ) : (
-                    <img
-                      className="h-14 w-14 rounded-full flex flex-shrink-0 object-cover"
-                      src={
-                        getChatObjectMetadata(currentChat.current, user!).avatar
-                      }
-                    />
-                  )}
-                  <div>
-                    <p className="font-bold">
-                      {getChatObjectMetadata(currentChat.current, user!).title}
-                    </p>
-                    <small className="text-zinc-400">
-                      {
-                        getChatObjectMetadata(currentChat.current, user!)
-                          .description
-                      }
-                    </small>
-                    <div className="text-xs">{isTyping ? <p>Typing...</p> : null}</div>
+                  </div>
+                  <div className="px-6 py-2 rounded-full">
+                    <MdVideoCall size={30} />
                   </div>
                 </div>
               </div>
@@ -502,7 +509,7 @@ export const Chat = () => {
                 )}
               </div>
               {attachedFiles.length > 0 ? (
-                <div className="grid gap-4 grid-cols-5 p-4 justify-start max-w-fit">
+                <div className="grid gap-4 grid-cols-5 p-4 justify-start w-full min-w-fit  bg-black/30">
                   {attachedFiles.map((file, i) => {
                     return (
                       <div
@@ -550,8 +557,8 @@ export const Chat = () => {
                   className="p-4 rounded-full bg-dark hover:bg-secondary"
                 >
                   {/* <PaperClipIcon className="w-6 h-6" /> */}
+                  <GoPaperclip size={30} />
                 </label>
-
                 <Input
                   placeholder="Message"
                   value={message}
@@ -568,7 +575,7 @@ export const Chat = () => {
                   className="p-4 rounded-full bg-dark hover:bg-secondary disabled:opacity-50"
                 >
                   {/* <PaperAirplaneIcon className="w-6 h-6" /> */}
-                  <IoMdSend size={30}/>
+                  <IoMdSend size={30} />
                 </button>
               </div>
             </>
