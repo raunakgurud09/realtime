@@ -58,3 +58,15 @@ export const sendMessage = (
 export const deleteOneOnOneChat = (chatId: string) => {
   return apiClient.delete(`/chat-app/chats/remove/${chatId}`);
 };
+
+export const createUserChat = (receiverId: string) => {
+  return apiClient.post(`/chat-app/chats/c/${receiverId}`);
+};
+
+export const createGroupChat = (data: { name: string; participants: string[] }) => {
+  return apiClient.post(`/chat-app/chats/group`, data);
+};
+
+export const getAvailableUsers = () => {
+  return apiClient.get("/chat-app/chats/users");
+};
