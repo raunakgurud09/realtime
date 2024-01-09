@@ -24,6 +24,7 @@ import { ChatListItemInterface, ChatMessageInterface } from "../interface/chat";
 import { LocalStorage } from "../utils/LocalStorage";
 import AddChatModal from "../components/chat/AddChatModal";
 import { MyMenu } from "../components/chat/MenuDropDown";
+import { ProfileEditModal } from "../components/chat/ProfileEditModal";
 
 const CONNECTED_EVENT = "connected";
 const DISCONNECT_EVENT = "disconnect";
@@ -44,6 +45,7 @@ export const Chat = () => {
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const [openAddChat, setOpenAddChat] = useState(false)
+  const [openProfileEdit, setOpenProfileEdit] = useState(false)
 
   const [isConnected, setIsConnected] = useState(false);
 
@@ -339,12 +341,18 @@ export const Chat = () => {
           getChats();
         }}
       />
+      <ProfileEditModal
+        open={openProfileEdit}
+        onClose={() => {
+          setOpenProfileEdit(false)
+        }}
+      />
 
       <div className="w-full justify-between items-stretch h-screen flex flex-shrink-0 overflow-y-hidden">
         <div className="w-3/12 relative ring-white overflow-y-auto px-4">
           <div className="h-20 flex justify-between  items-center flex-row">
             <button
-              onClick={() => console.log('profile')}
+              onClick={() => setOpenProfileEdit(true)}
             >
               <img
                 className="h-10 w-10 rounded-full flex flex-shrink-0 object-cover"
