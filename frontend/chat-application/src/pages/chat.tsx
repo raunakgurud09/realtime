@@ -3,7 +3,6 @@ import { useEffect, useRef, useState } from "react";
 import { getChatMessages, getUserChats, sendMessage } from "../utils/axios";
 
 import { LuMessageSquarePlus } from "react-icons/lu";
-import { HiDotsVertical } from "react-icons/hi";
 import { IoMdSend } from "react-icons/io";
 import { GoPaperclip } from "react-icons/go";
 import { MdVideoCall } from "react-icons/md";
@@ -24,6 +23,7 @@ import {
 import { ChatListItemInterface, ChatMessageInterface } from "../interface/chat";
 import { LocalStorage } from "../utils/LocalStorage";
 import AddChatModal from "../components/chat/AddChatModal";
+import { MyMenu } from "../components/chat/MenuDropDown";
 
 const CONNECTED_EVENT = "connected";
 const DISCONNECT_EVENT = "disconnect";
@@ -343,23 +343,28 @@ export const Chat = () => {
       <div className="w-full justify-between items-stretch h-screen flex flex-shrink-0 overflow-y-hidden">
         <div className="w-3/12 relative ring-white overflow-y-auto px-4">
           <div className="h-20 flex justify-between  items-center flex-row">
-            <img
-              className="h-10 w-10 rounded-full flex flex-shrink-0 object-cover"
-              src={user?.avatar.url}
-              alt="user"
-            />
+            <button
+              onClick={() => console.log('profile')}
+            >
+              <img
+                className="h-10 w-10 rounded-full flex flex-shrink-0 object-cover"
+                src={user?.avatar.url}
+                alt="user"
+              />
+            </button>
             <div className="flex flex-row justify-center items-center gap-1">
+
               <button
                 onClick={() => setOpenAddChat(true)}
                 className="rounded-full border-none hover:bg-blue-200/5 text-white p-3 flex flex-shrink-0"
               >
                 <LuMessageSquarePlus size={20} />
               </button>
+
               <button
-                // onClick={() => setOpenAddChat(true)}
                 className="rounded-full border-none hover:bg-blue-200/5 text-white p-3 flex flex-shrink-0"
               >
-                <HiDotsVertical size={20} />
+                <MyMenu />
               </button>
             </div>
           </div>
@@ -424,6 +429,7 @@ export const Chat = () => {
               })
           )}
         </div>
+
         <div className="w-9/12 border-l-[0.1px] border-white/20">
           {currentChat.current && currentChat.current?._id ? (
             <>
@@ -440,7 +446,7 @@ export const Chat = () => {
                                 key={participant._id}
                                 src={participant.avatar.url}
                                 className={classNames(
-                                  "w-9 h-9 border-[0.1px] border-white/20 rounded-full absolute outline outline-4 outline-dark",
+                                  "w-9 h-9 border-[0.1px] border-white/20 rounded-full absolute outline-dark",
                                   i === 0
                                     ? "left-0 z-30"
                                     : i === 1
