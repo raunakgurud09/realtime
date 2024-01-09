@@ -23,7 +23,7 @@ import {
 } from "../utils";
 import { ChatListItemInterface, ChatMessageInterface } from "../interface/chat";
 import { LocalStorage } from "../utils/LocalStorage";
-// import AddChatModal from "../components/chat/AddChatModal";
+import AddChatModal from "../components/chat/AddChatModal";
 
 const CONNECTED_EVENT = "connected";
 const DISCONNECT_EVENT = "disconnect";
@@ -43,7 +43,7 @@ export const Chat = () => {
 
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  // const [openAddChat, setOpenAddChat] = useState(false)
+  const [openAddChat, setOpenAddChat] = useState(false)
 
   const [isConnected, setIsConnected] = useState(false);
 
@@ -330,7 +330,7 @@ export const Chat = () => {
 
   return (
     <>
-      {/* <AddChatModal
+      <AddChatModal
         open={openAddChat}
         onClose={() => {
           setOpenAddChat(false);
@@ -338,7 +338,7 @@ export const Chat = () => {
         onSuccess={() => {
           getChats();
         }}
-      /> */}
+      />
 
       <div className="w-full justify-between items-stretch h-screen flex flex-shrink-0 overflow-y-hidden">
         <div className="w-3/12 relative ring-white overflow-y-auto px-4">
@@ -350,7 +350,7 @@ export const Chat = () => {
             />
             <div className="flex flex-row justify-center items-center gap-1">
               <button
-                // onClick={() => setOpenAddChat(true)}
+                onClick={() => setOpenAddChat(true)}
                 className="rounded-full border-none hover:bg-blue-200/5 text-white p-3 flex flex-shrink-0"
               >
                 <LuMessageSquarePlus size={20} />

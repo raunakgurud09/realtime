@@ -1,44 +1,37 @@
 import { Dialog, Switch, Transition } from "@headlessui/react";
-import {
-  UserGroupIcon,
-  XCircleIcon,
-  XMarkIcon,
-} from "@heroicons/react/20/solid";
+
+import { MdGroups } from "react-icons/md";
+import { CiCircleRemove } from "react-icons/ci";
+import { IoClose } from "react-icons/io5";
+
+
+
 import { Fragment, useEffect, useState } from "react";
-import { createGroupChat, createUserChat, getAvailableUsers } from "../../api";
-import { ChatListItemInterface } from "../../interfaces/chat";
-import { UserInterface } from "../../interfaces/user";
 import { classNames, requestHandler } from "../../utils";
 import Button from "../Button";
 import Input from "../Input";
+import { ChatListItemInterface } from "../../interface/chat";
+import { UserInterface } from "../../interface/user";
 import Select from "../Select";
+import { createGroupChat, createUserChat, getAvailableUsers } from "../../utils/axios";
 
 const AddChatModal: React.FC<{
   open: boolean;
   onClose: () => void;
   onSuccess: (chat: ChatListItemInterface) => void;
 }> = ({ open, onClose, onSuccess }) => {
-  // State to store the list of users, initialized as an empty array
+
   const [users, setUsers] = useState<UserInterface[]>([]);
-  // State to store the name of a group, initialized as an empty string
   const [groupName, setGroupName] = useState("");
-  // State to determine if the chat is a group chat, initialized as false
   const [isGroupChat, setIsGroupChat] = useState(false);
-  // State to store the list of participants in a group chat, initialized as an empty array
   const [groupParticipants, setGroupParticipants] = useState<string[]>([]);
-  // State to store the ID of a selected user, initialized as null
   const [selectedUserId, setSelectedUserId] = useState<null | string>(null);
-  // State to determine if a chat is currently being created, initialized as false
   const [creatingChat, setCreatingChat] = useState(false);
 
-  // Function to fetch users
   const getUsers = async () => {
-    // Handle the request to get available users
     requestHandler(
-      // Callback to fetch available users
       async () => await getAvailableUsers(),
       null, // No loading setter callback provided
-      // Success callback
       (res) => {
         const { data } = res; // Extract data from response
         setUsers(data || []); // Set users data or an empty array if data is absent
@@ -47,20 +40,14 @@ const AddChatModal: React.FC<{
     );
   };
 
-  // Function to create a new chat with a user
   const createNewChat = async () => {
-    // If no user is selected, show an alert
     if (!selectedUserId) return alert("Please select a user");
 
-    // Handle the request to create a chat
     await requestHandler(
-      // Callback to create a user chat
       async () => await createUserChat(selectedUserId),
       setCreatingChat, // Callback to handle loading state
-      // Success callback
       (res) => {
         const { data } = res; // Extract data from response
-        // If chat already exists with the selected user
         if (res.statusCode === 200) {
           alert("Chat with selected user already exists");
           return;
@@ -72,24 +59,18 @@ const AddChatModal: React.FC<{
     );
   };
 
-  // Function to create a new group chat
   const createNewGroupChat = async () => {
-    // Check if a group name is provided
     if (!groupName) return alert("Group name is required");
-    // Ensure there are at least 2 group participants
     if (!groupParticipants.length || groupParticipants.length < 2)
       return alert("There must be at least 2 group participants");
 
-    // Handle the request to create a group chat
     await requestHandler(
-      // Callback to create a group chat with name and participants
       async () =>
         await createGroupChat({
           name: groupName,
           participants: groupParticipants,
         }),
       setCreatingChat, // Callback to handle loading state
-      // Success callback
       (res) => {
         const { data } = res; // Extract data from response
         onSuccess(data); // Execute the onSuccess function with received data
@@ -99,33 +80,22 @@ const AddChatModal: React.FC<{
     );
   };
 
-  // Function to reset local state values and close the modal/dialog
   const handleClose = () => {
-    // Clear the list of users
     setUsers([]);
-    // Reset the selected user ID
     setSelectedUserId("");
-    // Clear the group name
     setGroupName("");
-    // Clear the group participants list
     setGroupParticipants([]);
-    // Set the chat type to not be a group chat
     setIsGroupChat(false);
-    // Execute the onClose callback/function
     onClose();
   };
 
-  // useEffect hook to perform side effects based on changes in the component lifecycle or state/props
   useEffect(() => {
-    // Check if the modal/dialog is not open
     if (!open) return;
-    // Fetch users if the modal/dialog is open
     getUsers();
-    // The effect depends on the 'open' value. Whenever 'open' changes, the effect will re-run.
   }, [open]);
 
   return (
-    <Transition.Root show={open} as={Fragment}>
+  <Transition.Root show={open} as={Fragment}>
       <Dialog as="div" className="relative z-10" onClose={handleClose}>
         <Transition.Child
           as={Fragment}
@@ -151,7 +121,7 @@ const AddChatModal: React.FC<{
               leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
             >
               <Dialog.Panel
-                className="relative transform overflow-x-hidden rounded-lg bg-dark px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-3xl sm:p-6"
+                className="relative transform overflow-x-hidden rounded-lg bg-black px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-3xl sm:p-6"
                 style={{
                   overflow: "inherit",
                 }}
@@ -166,11 +136,11 @@ const AddChatModal: React.FC<{
                     </Dialog.Title>
                     <button
                       type="button"
-                      className="rounded-md bg-transparent text-zinc-400 hover:text-zinc-600 focus:outline-none focus:ring-1 focus:ring-white focus:ring-offset-2"
+                      className="rounded-full bg-transparent  focus:outline-none focus:ring-0 focus:ring-white focus:ring-offset-0"
                       onClick={() => handleClose()}
                     >
                       <span className="sr-only">Close</span>
-                      <XMarkIcon className="h-6 w-6" aria-hidden="true" />
+                      <IoClose className="h-6 w-6" aria-hidden="true" />
                     </button>
                   </div>
                 </div>
@@ -232,11 +202,9 @@ const AddChatModal: React.FC<{
                       })}
                       onChange={({ value }) => {
                         if (isGroupChat && !groupParticipants.includes(value)) {
-                          // if user is creating a group chat track the participants in an array
                           setGroupParticipants([...groupParticipants, value]);
                         } else {
                           setSelectedUserId(value);
-                          // if user is creating normal chat just get a single user
                         }
                       }}
                     />
@@ -248,8 +216,8 @@ const AddChatModal: React.FC<{
                           "font-medium text-white inline-flex items-center"
                         )}
                       >
-                        <UserGroupIcon className="h-5 w-5 mr-2" /> Selected
-                        participants
+                        <MdGroups className="h-5 w-5 mr-2" /> 
+                        participant
                       </span>{" "}
                       <div className="flex justify-start items-center flex-wrap gap-2 mt-3">
                         {users
@@ -269,7 +237,7 @@ const AddChatModal: React.FC<{
                                 <p className="text-white">
                                   {participant.username}
                                 </p>
-                                <XCircleIcon
+                                <CiCircleRemove
                                   role="button"
                                   className="w-6 h-6 hover:text-primary cursor-pointer"
                                   onClick={() => {
@@ -290,16 +258,16 @@ const AddChatModal: React.FC<{
                 <div className="mt-5 flex justify-between items-center gap-4">
                   <Button
                     disabled={creatingChat}
-                    severity={"secondary"}
+                    // severity={"secondary"}
                     onClick={handleClose}
-                    className="w-1/2"
+                    className="w-1/2 bg-red-700"
                   >
                     Close
                   </Button>
                   <Button
                     disabled={creatingChat}
                     onClick={isGroupChat ? createNewGroupChat : createNewChat}
-                    className="w-1/2"
+                    className="w-1/2 bg-green-600"
                   >
                     Create
                   </Button>
