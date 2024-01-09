@@ -196,3 +196,59 @@ export const getAllChats = asyncHandler(async (req, res) => {
       new ApiResponse(200, chats || [], "User chats fetched successfully!")
     );
 });
+
+export const createAGroupChat = asyncHandler(async (req, res) => {
+  const { name, participants } = req.body;
+
+  if (participants.includes(req.user._id.toString())) {
+    throw new ApiError(
+      400,
+      "Participants array should not contain the group creator"
+    );
+  }
+
+  // member array banana with unique members
+  const members = [...new Set([...participants, req.user._id.toString()])];
+
+  // check weather the group-chat has more than 3 members
+  if (members.length < 3) {
+    throw new ApiError(
+      400,
+      "Seems like you have passed duplicate participants."
+    );
+  }
+
+  // new group-chat create karna
+  const groupChat = await Chat.create({
+    name,
+    isGroupChat: true,
+    participants: members,
+    admin: req.user._id,
+  });
+
+  const chat = await Chat.aggregate([
+    {
+      $match: {
+        _id: groupChat._id,
+      },
+    },
+    ...chatCommonAggregation(),
+  ]);
+
+  const payload = chat[0];
+
+  payload.participants.forEach((participant) => {
+    if (participant._id.toString() === req.user._id.toString()) return;
+
+    emitSocketEvent(
+      req,
+      participant._id.toString(),
+      ChatEventEnum.NEW_CHAT_EVENT,
+      payload
+    );
+  });
+
+  return res
+    .status(201)
+    .json(new ApiResponse(201, payload, "Group chat created successfully"));
+});
