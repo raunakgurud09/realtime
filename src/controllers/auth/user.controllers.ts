@@ -6,6 +6,7 @@ import { ApiResponse } from "../../utils/ApiResponse";
 import { asyncHandler } from "../../utils/asyncHandler";
 import { Request, Response } from "express";
 import crypto from "crypto";
+import { getLocalPath, getStaticFilePath, removeLocalFile } from "../../utils/helpers";
 
 const generateAccessAndRefreshTokens = async (userId: string) => {
   try {
@@ -258,4 +259,40 @@ export const resendEmailVerification = asyncHandler(async (req, res) => {
   return res
     .status(200)
     .json(new ApiResponse(200, {}, "Mail has been sent to your mail ID"));
+});
+
+export const updateUserAvatar = asyncHandler(async (req, res) => {
+  // check for file
+  if (!req.file?.filename) {
+    throw new ApiError(400, "Avatar image is required");
+  }
+
+  const avatarUrl = getStaticFilePath(req, req.file?.filename);
+  const avatarLocalUrl = getLocalPath(req.file?.filename);
+
+  // find the user
+  const user = await User.findById(req.user._id);
+  if (!user) throw new ApiError(404, "User not found");
+
+  // update the set for user
+  const updatedUser = await User.findByIdAndUpdate(
+    { _id: req.user._id },
+    {
+      $set: {
+        avatar: {
+          url: avatarUrl,
+          localPath: avatarLocalUrl,
+        },
+      },
+    },
+    { new: true }
+  ).select(
+    "-password -refreshToken -forgotPasswordToken -emailVerificationToken -emailVerificationExpiry"
+  );
+
+  removeLocalFile(avatarLocalUrl);
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, updatedUser, "user avatar updated"));
 });

@@ -6,9 +6,11 @@ import {
   loginUser,
   registerUser,
   resendEmailVerification,
+  updateUserAvatar,
   verifyEmail,
 } from "../../controllers/auth/user.controllers";
 import { verifyJWT } from "../../middlewares/auth.middlewares";
+import { upload } from "../../middlewares/multer.middlewares";
 
 const router = Router();
 
@@ -20,9 +22,14 @@ router.route("/verify-email/:verificationToken").get(verifyEmail);
 // router.route("/refresh-token").post(refreshAccessToken);
 
 // SECURE ROUTES
+
 router.route("/current-user").get(verifyJWT, getCurrentUser);
 router
   .route("/resend-email-verification")
   .post(verifyJWT, resendEmailVerification);
+
+router
+  .route("/avatar")
+  .patch(verifyJWT, upload.single("avatar"), updateUserAvatar);
 
 export default router;
