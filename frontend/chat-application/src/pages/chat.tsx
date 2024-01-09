@@ -134,15 +134,11 @@ export const Chat = () => {
 
   // Function to send a chat message
   const sendChatMessage = async () => {
-    // If no current chat ID exists or there's no socket connection, exit the function
     if (!currentChat.current?._id || !socket) return;
 
-    // Emit a STOP_TYPING_EVENT to inform other users/participants that typing has stopped
     socket.emit(STOP_TYPING_EVENT, currentChat.current?._id);
 
-    // Use the requestHandler to send the message and handle potential response or error
     await requestHandler(
-      // Try to send the chat message with the given message and attached files
       async () =>
         await sendMessage(
           currentChat.current?._id || "", // Chat ID or empty string if not available
@@ -150,49 +146,35 @@ export const Chat = () => {
           attachedFiles // Any attached files
         ),
       null,
-      // On successful message sending, clear the message input and attached files, then update the UI
       (res) => {
         setMessage(""); // Clear the message input
         setAttachedFiles([]); // Clear the list of attached files
         setMessages((prev) => [res.data, ...prev]); // Update messages in the UI
         updateChatLastMessage(currentChat.current?._id || "", res.data); // Update the last message in the chat
       },
-
-      // If there's an error during the message sending process, raise an alert
       alert
     );
   };
 
   const handleOnMessageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // Update the message state with the current input value
     setMessage(e.target.value);
 
-    // If socket doesn't exist or isn't connected, exit the function
     if (!socket || !isConnected) return;
 
-    // Check if the user isn't already set as typing
     if (!selfTyping) {
-      // Set the user as typing
       setSelfTyping(true);
-
-      // Emit a typing event to the server for the current chat
       socket.emit(TYPING_EVENT, currentChat.current?._id);
     }
 
-    // Clear the previous timeout (if exists) to avoid multiple setTimeouts from running
     if (typingTimeoutRef.current) {
       clearTimeout(typingTimeoutRef.current);
     }
 
-    // Define a length of time (in milliseconds) for the typing timeout
     const timerLength = 3000;
 
-    // Set a timeout to stop the typing indication after the timerLength has passed
     typingTimeoutRef.current = setTimeout(() => {
-      // Emit a stop typing event to the server for the current chat
       socket.emit(STOP_TYPING_EVENT, currentChat.current?._id);
 
-      // Reset the user's typing state
       setSelfTyping(false);
     }, timerLength);
   };
@@ -205,31 +187,18 @@ export const Chat = () => {
     setIsConnected(false);
   };
 
-  /**
-   * Handles the "typing" event on the socket.
-   */
   const handleOnSocketTyping = (chatId: string) => {
-    // Check if the typing event is for the currently active chat.
     if (chatId !== currentChat.current?._id) return;
 
-    // Set the typing state to true for the current chat.
     setIsTyping(true);
   };
 
-  /**
-   * Handles the "stop typing" event on the socket.
-   */
   const handleOnSocketStopTyping = (chatId: string) => {
-    // Check if the stop typing event is for the currently active chat.
     if (chatId !== currentChat.current?._id) return;
 
-    // Set the typing state to false for the current chat.
     setIsTyping(false);
   };
 
-  /**
-   * Handles the event when a new message is received.
-   */
   const onMessageReceived = (message: ChatMessageInterface) => {
     // Check if the received message belongs to the currently active chat
     if (message?.chat !== currentChat.current?._id) {
