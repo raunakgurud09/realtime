@@ -290,7 +290,7 @@ export const updateUserAvatar = asyncHandler(async (req, res) => {
     "-password -refreshToken -forgotPasswordToken -emailVerificationToken -emailVerificationExpiry"
   );
 
-  removeLocalFile(avatarLocalUrl);
+  removeLocalFile(user.avatar.localPath);
 
   return res
     .status(200)
