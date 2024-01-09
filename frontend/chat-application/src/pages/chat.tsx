@@ -299,6 +299,7 @@ export const Chat = () => {
 
   }, [socket, chats]);
 
+
   return (
     <>
       <AddChatModal
@@ -338,11 +339,11 @@ export const Chat = () => {
                 <LuMessageSquarePlus size={20} />
               </button>
 
-              <button
+              <div
                 className="rounded-full border-none hover:bg-blue-200/5 text-white p-3 flex flex-shrink-0"
               >
                 <MyMenu />
-              </button>
+              </div>
             </div>
           </div>
           <div className="z-10 w-full sticky top-0 bg-dark py-4 flex justify-between items-center gap-4">
@@ -439,8 +440,8 @@ export const Chat = () => {
                     ) : (
                       <img
                         className="h-14 w-14 rounded-full flex flex-shrink-0 object-cover"
-                        src={
-                          getChatObjectMetadata(currentChat.current, user!).avatar
+                        src={getChatObjectMetadata(currentChat.current, user!).avatar
+
                         }
                       />
                     )}
