@@ -14,21 +14,18 @@ const ChatItem: React.FC<{
   unreadCount?: number;
   onChatDelete: (chatId: string) => void;
 }> = ({ chat, onClick, isActive, unreadCount = 0, onChatDelete }) => {
+
   const { user } = useAuth();
   const [openOptions, setOpenOptions] = useState(false);
 
   // Define an asynchronous function named 'deleteChat'.
   const deleteChat = async () => {
     await requestHandler(
-      //  A callback function that performs the deletion of a one-on-one chat by its ID.
       async () => await deleteOneOnOneChat(chat._id),
       null,
-      // A callback function to be executed on success. It will call 'onChatDelete'
-      // function with the chat's ID as its parameter.
       () => {
         onChatDelete(chat._id);
       },
-      // The 'alert' function (likely to display error messages to the user.
       alert
     );
   };
@@ -37,7 +34,6 @@ const ChatItem: React.FC<{
 
   return (
     <>
-
       <div
         role="button"
         onClick={() => onClick(chat)}
@@ -57,9 +53,9 @@ const ChatItem: React.FC<{
           }}
           className="self-center p-1 relative"
         >
-          <p className="mr-2 h-6 group-hover:w-3 group-hover:opacity-100 w-0 transition-all ease-in-out duration-100 text-zinc-300" >
+          <div className="mr-2 h-6 group-hover:w-3 group-hover:opacity-100 w-0 transition-all ease-in-out duration-100 text-zinc-300" >
             <HiDotsVertical size={20} />
-          </p>
+          </div>
           <div
             className={classNames(
               "z-20 text-left absolute bottom-0 translate-y-full text-sm w-52 bg-dark rounded-2xl p-2 shadow-md border-[1px] border-secondary",
@@ -67,16 +63,15 @@ const ChatItem: React.FC<{
             )}
           >
             {chat.isGroupChat ? (
-              <p
+              <div
                 onClick={(e) => {
                   e.stopPropagation();
                 }}
                 role="button"
                 className="p-4 w-full rounded-lg inline-flex items-center hover:bg-secondary"
               >
-
-                <p className="h-4 w-4 mr-2" /> About group
-              </p>
+                <span className="h-4 w-4 mr-2" > About group</span>
+              </div>
             ) : (
               <p
                 onClick={(e) => {
@@ -91,7 +86,7 @@ const ChatItem: React.FC<{
                 role="button"
                 className="p-4 text-danger rounded-lg w-full inline-flex items-center hover:bg-secondary"
               >
-                <p className="h-4 w-4 mr-2" />
+                {/* <p className="h-4 w-4 mr-2" /> */}
                 Delete chat
               </p>
             )}
