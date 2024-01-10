@@ -1,9 +1,3 @@
-// import {
-//   ArrowDownTrayIcon,
-//   MagnifyingGlassPlusIcon,
-//   PaperClipIcon,
-//   XMarkIcon,
-// } from "@heroicons/react/20/solid";
 import moment from "moment";
 import { useState } from "react";
 import { classNames } from "../../utils";

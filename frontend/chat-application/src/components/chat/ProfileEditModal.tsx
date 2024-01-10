@@ -1,5 +1,5 @@
 import { Dialog, Transition } from '@headlessui/react';
-import React, { Fragment, useEffect } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 
 import { IoArrowBack } from "react-icons/io5";
 import { BiSolidCameraPlus } from "react-icons/bi";
@@ -16,6 +16,8 @@ export const ProfileEditModal: React.FC<{
 }> = ({ open, onClose }) => {
 
   const { user } = useAuth()
+
+  const [attachedImage, setAttachedImage] = useState<File>()
 
 
   useEffect(() => {
@@ -41,8 +43,8 @@ export const ProfileEditModal: React.FC<{
           <div className="fixed inset-0 bg-black/50 bg-opacity-75 transition-opacity" />
         </Transition.Child>
 
-        <div className="fixed left-0 top-0 bottom-0 z-10 overflow-y-visible w-full">
-          <div className="flex min-h-full w-3/12 items-end justify-center text-center sm:items-center sm:p-0">
+        <div className="fixed left-0 top-0 bottom-0 z-10 overflow-y-visible w-full rounded-r-full">
+          <div className="flex min-h-full w-3/12 items-end justify-center text-center sm:items-center sm:p-0 rounded-r-full">
             <Transition.Child
               as={Fragment}
               enter="transition ease-in-out duration-300 transform"
@@ -53,12 +55,12 @@ export const ProfileEditModal: React.FC<{
               leaveTo="-translate-x-full"
             >
               <Dialog.Panel
-                className="relative transform overflow-x-hidden rounded-lg  h-screen text-left shadow-xl transition-all sm:w-full"
-                style={{
+                className="relative transform overflow-x-hidden rounded-lg  h-screen text-left shadow-xl transition-all sm:w-full "
+                style={{ 
                   overflow: "inherit",
                 }}
               >
-                <div className='flex justify-start items-center bg-black gap-4 pt-20 pb-5 px-6 border-b border-white/20'>
+                <div className='flex justify-start items-center bg-black gap-4 pt-20 pb-5 px-6 border-b border-white/20 rounded-tr-3xl'>
                   <IoArrowBack size={20}
                     className="hover:cursor-pointer"
                     onClick={() => handleClose()}
@@ -68,13 +70,28 @@ export const ProfileEditModal: React.FC<{
                 <div className='flex flex-col justify-start items-center bg-zinc-900 w-full h-full'>
                   <div className='relative flex items-center justify-center m-8 group group-hover:border-[1px] border-white hover:cursor-pointer'>
                     <img
-                      className="h-30 w-30 rounded-full flex flex-shrink-0 object-cover"
+                      className="h-60 w-60 rounded-full flex flex-shrink-0 object-contain bg-white"
                       src={user?.avatar.url}
                       alt="user"
                     />
+                    <input
+                      hidden
+                      id="profile"
+                      type="file"
+                      value=""
+                      max={1}
+                      onChange={(e) => {
+                        if (e.target.files) {
+                          setAttachedImage(e.target.files[0]);
+                        }
+                      }}
+                      placeholder='hi'
+                      className='absolute flex flex-col item-center justify-center w-full rounded-full z-40  h-full opacity-0'
+                    />
+
                     <div
-                      onClick={() => console.log('handleUploadProfilePic')}
-                      className='absolute flex flex-col item-center justify-between w-1/2 text-white  z-30 opacity-0 group-hover:opacity-100'
+                      onClick={() => console.log(attachedImage)}
+                      className='absolute flex flex-col item-center justify-center w-full text-white  z-30 opacity-0 group-hover:opacity-90 h-full  group-hover:bg-black rounded-full'
                     >
                       <span className='w-full flex justify-center'>
                         <BiSolidCameraPlus size={20} />
@@ -83,7 +100,6 @@ export const ProfileEditModal: React.FC<{
                         EDIT PROFILE IMAGE
                       </span>
                     </div>
-                    <div className='absolute  h-full w-full group-hover:bg-black group-hover:opacity-75 rounded-full' />
                   </div>
                   <div className='w-full h-40 flex flex-col p-6'>
                     <div>
@@ -102,7 +118,17 @@ export const ProfileEditModal: React.FC<{
                     </div>
                   </div>
                   <div className=' w-full bottom-0 flex flex-row items-center justify-center'>
+                    {attachedImage &&
+                      <>
+                        <img
+                          className="h-full rounded-xl w-full object-cover"
+                          src={URL.createObjectURL(attachedImage)}
+                          alt="attachment"
+                        />
+                      </>
+                    }
                     <button
+                      onClick={() => { console.log(attachedImage) }}
                       className='bg-red-600 px-8 py-2 rounded-full'
                     >
                       Delete account
