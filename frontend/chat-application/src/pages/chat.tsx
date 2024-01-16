@@ -355,7 +355,7 @@ export const Chat = () => {
             <BiSearch size={16} className="absolute left-8 text-white/80" />
             <input
               placeholder="Search user or group..."
-              className='"block w-full h-10 pl-10 rounded-md outline outline-[1px] text-white/80  focus:ring-1  drop-shadow-xl placeholder:text-sm placeholder:text-white/30  outline-zinc-400/30  px-5 bg-zinc-800/30 text-white  placeholder:text-white/70",'
+              className="block w-full h-10 pl-10 rounded-md outline outline-[1px] text-white/80  focus:ring-1  drop-shadow-xl placeholder:text-sm placeholder:text-white/30  outline-zinc-400/30  px-5 bg-zinc-800/30 text-white"
               value={localSearchQuery}
               onChange={(e) =>
                 setLocalSearchQuery(e.target.value.toLowerCase())
@@ -551,6 +551,8 @@ export const Chat = () => {
                 </label>
                 <Input
                   placeholder="Message"
+                  // className=""
+                  className="block w-full h-12 pl-10 rounded-md outline outline-[1px] text-white/80  focus:ring-1  drop-shadow-xl placeholder:text-sm placeholder:text-white/30  outline-zinc-400/30  px-5 bg-zinc-800/30 text-white"
                   value={message}
                   onChange={handleOnMessageChange}
                   onKeyDown={(e) => {
