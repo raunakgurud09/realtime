@@ -30,7 +30,7 @@ export const ProfileEditModal: React.FC<{
 
   return (
     <Transition.Root show={open} as={Fragment}>
-      <Dialog as="div" className="relative z-10" onClose={handleClose}>
+      <Dialog as="div" className="relative z-20" onClose={handleClose}>
         <Transition.Child
           as={Fragment}
           enter="ease-out duration-300"
@@ -40,7 +40,7 @@ export const ProfileEditModal: React.FC<{
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div className="fixed inset-0 bg-black/50 bg-opacity-75 transition-opacity" />
+          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm  transition-opacity" />
         </Transition.Child>
 
         <div className="fixed left-0 top-0 bottom-0 z-10 overflow-y-visible w-full rounded-r-full">

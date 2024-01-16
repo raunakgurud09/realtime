@@ -4,6 +4,7 @@ import { loginSchema, registerSchema } from "../../validations/auth.validation";
 import {
   getCurrentUser,
   loginUser,
+  logoutUser,
   registerUser,
   resendEmailVerification,
   updateUserAvatar,
@@ -22,6 +23,7 @@ router.route("/verify-email/:verificationToken").get(verifyEmail);
 // router.route("/refresh-token").post(refreshAccessToken);
 
 // SECURE ROUTES
+router.route("/logout").post(verifyJWT, logoutUser);
 
 router.route("/current-user").get(verifyJWT, getCurrentUser);
 router

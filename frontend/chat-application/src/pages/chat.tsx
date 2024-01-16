@@ -25,6 +25,7 @@ import { LocalStorage } from "../utils/LocalStorage";
 import AddChatModal from "../components/chat/AddChatModal";
 import { MyMenu } from "../components/chat/MenuDropDown";
 import { ProfileEditModal } from "../components/chat/ProfileEditModal";
+import { BiSearch } from "react-icons/bi";
 
 const CONNECTED_EVENT = "connected";
 const DISCONNECT_EVENT = "disconnect";
@@ -71,21 +72,18 @@ export const Chat = () => {
    */
   const updateChatLastMessage = (
     chatToUpdateId: string,
-    message: ChatMessageInterface // The new message to be set as the last message
+    message: ChatMessageInterface
   ) => {
-    // Search for the chat with the given ID in the chats array
+
     const chatToUpdate = chats.find((chat) => chat._id === chatToUpdateId)!;
 
-    // Update the 'lastMessage' field of the found chat with the new message
     chatToUpdate.lastMessage = message;
 
-    // Update the 'updatedAt' field of the chat with the 'updatedAt' field from the message
     chatToUpdate.updatedAt = message?.updatedAt;
 
-    // Update the state of chats, placing the updated chat at the beginning of the array
     setChats([
-      chatToUpdate, // Place the updated chat first
-      ...chats.filter((chat) => chat._id !== chatToUpdateId), // Include all other chats except the updated one
+      chatToUpdate,
+      ...chats.filter((chat) => chat._id !== chatToUpdateId),
     ]);
   };
 
@@ -272,7 +270,6 @@ export const Chat = () => {
     // An empty dependency array ensures this useEffect runs only once, similar to componentDidMount.
   }, []);
 
-  // This useEffect handles the setting up and tearing down of socket event listeners.
   useEffect(() => {
     if (!socket) return;
 
@@ -319,15 +316,21 @@ export const Chat = () => {
       />
 
       <div className="w-full justify-between items-stretch h-screen flex flex-shrink-0 overflow-y-hidden">
-        <div className="w-3/12 relative ring-white overflow-y-auto px-4">
-          <div className="h-20 flex justify-between  items-center flex-row">
+
+        {/* All chats section */}
+        <div className="w-3/12 relative ring-white overflow-y-auto">
+
+          {/* profile icon */}
+          <div className="h-20 border-b border-white/20 my-[9px] px-4 flex justify-between  items-center flex-row">
             <button
               onClick={() => setOpenProfileEdit(true)}
             >
               <img
-                className="h-10 w-10 rounded-full flex flex-shrink-0 object-cover"
+                className="h-12 w-12 rounded-full flex flex-shrink-0 object-cover"
                 src={user?.avatar.url}
                 alt="user"
+                width={200}
+                height={200}
               />
             </button>
             <div className="flex flex-row justify-center items-center gap-1">
@@ -346,7 +349,10 @@ export const Chat = () => {
               </div>
             </div>
           </div>
-          <div className="z-10 w-full sticky top-0 bg-dark py-4 flex justify-between items-center gap-4">
+
+          {/* search chats */}
+          <div className="z-10 px-4 w-full sticky top-0 bg-dark py-4 flex justify-between items-center gap-4">
+            <BiSearch size={20} />
             <Input
               placeholder="Search user or group..."
               value={localSearchQuery}
@@ -354,60 +360,60 @@ export const Chat = () => {
                 setLocalSearchQuery(e.target.value.toLowerCase())
               }
             />
-
           </div>
-          {loadingChats ? (
-            <div className="flex justify-center items-center h-[calc(100%-88px)]">
-              <Typing />
-            </div>
-          ) : (
-            // Iterating over the chats array
-            [...chats]
-              // Filtering chats based on a local search query
-              .filter((chat) =>
-                // If there's a localSearchQuery, filter chats that contain the query in their metadata title
-                localSearchQuery
-                  ? getChatObjectMetadata(chat, user!)
-                    .title?.toLocaleLowerCase()
-                    ?.includes(localSearchQuery)
-                  : // If there's no localSearchQuery, include all chats
-                  true
-              )
-              .map((chat) => {
-                return (
-                  <ChatItem
-                    chat={chat}
-                    isActive={chat._id === currentChat.current?._id}
-                    unreadCount={
-                      unreadMessages.filter((n) => n.chat === chat._id).length
-                    }
-                    onClick={(chat) => {
-                      if (
-                        currentChat.current?._id &&
-                        currentChat.current?._id === chat._id
-                      )
-                        return;
-                      LocalStorage.set("currentChat", chat);
-                      currentChat.current = chat;
-                      setMessage("");
-                      getMessages();
-                    }}
-                    key={chat._id}
-                    onChatDelete={(chatId) => {
-                      setChats((prev) =>
-                        prev.filter((chat) => chat._id !== chatId)
-                      );
-                      if (currentChat.current?._id === chatId) {
-                        currentChat.current = null;
-                        LocalStorage.remove("currentChat");
+
+          {/* all chats */}
+          <div className="px-4">
+            {loadingChats ? (
+              <div className="flex justify-center items-center h-[calc(100%-88px)]">
+                <Typing />
+              </div>
+            ) : (
+              [...chats]
+                .filter((chat) =>
+                  localSearchQuery
+                    ? getChatObjectMetadata(chat, user!)
+                      .title?.toLocaleLowerCase()
+                      ?.includes(localSearchQuery)
+                    : true
+                )
+                .map((chat) => {
+                  return (
+                    <ChatItem
+                      chat={chat}
+                      isActive={chat._id === currentChat.current?._id}
+                      unreadCount={
+                        unreadMessages.filter((n) => n.chat === chat._id).length
                       }
-                    }}
-                  />
-                );
-              })
-          )}
+                      onClick={(chat) => {
+                        if (
+                          currentChat.current?._id &&
+                          currentChat.current?._id === chat._id
+                        )
+                          return;
+                        LocalStorage.set("currentChat", chat);
+                        currentChat.current = chat;
+                        setMessage("");
+                        getMessages();
+                      }}
+                      key={chat._id}
+                      onChatDelete={(chatId) => {
+                        setChats((prev) =>
+                          prev.filter((chat) => chat._id !== chatId)
+                        );
+                        if (currentChat.current?._id === chatId) {
+                          currentChat.current = null;
+                          LocalStorage.remove("currentChat");
+                        }
+                      }}
+                    />
+                  );
+                })
+            )}
+          </div>
         </div>
 
+        {/* Main Chat */}
         <div className="w-9/12 border-l-[0.1px] border-white/20">
           {currentChat.current && currentChat.current?._id ? (
             <>
@@ -415,7 +421,7 @@ export const Chat = () => {
                 <div className="flex justify-between  items-center w-full gap-3">
                   <div className="flex justify-between items-center w-max gap-3">
                     {currentChat.current.isGroupChat ? (
-                      <div className="w-12 relative h-12 flex-shrink-0 flex justify-start items-center flex-nowrap">
+                      <div className="w-14 h-14 relative  flex-shrink-0 flex justify-start items-center flex-nowrap">
                         {currentChat.current.participants
                           .slice(0, 3)
                           .map((participant, i) => {
@@ -424,13 +430,13 @@ export const Chat = () => {
                                 key={participant._id}
                                 src={participant.avatar.url}
                                 className={classNames(
-                                  "w-9 h-9 border-[0.1px] border-white/20 rounded-full absolute outline-dark",
+                                  "w-9 h-9 border-[0.1px] rounded-full absolute outline-dark bg-white",
                                   i === 0
                                     ? "left-0 z-30"
                                     : i === 1
-                                      ? "left-2 z-20"
+                                      ? "left-3 z-20"
                                       : i === 2
-                                        ? "left-4 z-10"
+                                        ? "left-6 z-10"
                                         : ""
                                 )}
                               />
@@ -439,9 +445,8 @@ export const Chat = () => {
                       </div>
                     ) : (
                       <img
-                        className="h-14 w-14 rounded-full flex flex-shrink-0 object-cover"
+                        className="h-14 w-14 rounded-full flex flex-shrink-0 object-cover bg-white"
                         src={getChatObjectMetadata(currentChat.current, user!).avatar
-
                         }
                       />
                     )}
