@@ -2,13 +2,11 @@ import { Dialog, Switch, Transition } from "@headlessui/react";
 
 import { MdGroups } from "react-icons/md";
 import { CiCircleRemove } from "react-icons/ci";
-import { IoClose } from "react-icons/io5";
 
 
 
 import { Fragment, useEffect, useState } from "react";
 import { classNames, requestHandler } from "../../utils";
-import Button from "../Button";
 import Input from "../Input";
 import { ChatListItemInterface } from "../../interface/chat";
 import { UserInterface } from "../../interface/user";
@@ -95,7 +93,7 @@ const AddChatModal: React.FC<{
   }, [open]);
 
   return (
-  <Transition.Root show={open} as={Fragment}>
+    <Transition.Root show={open} as={Fragment}>
       <Dialog as="div" className="relative z-20" onClose={handleClose}>
         <Transition.Child
           as={Fragment}
@@ -121,36 +119,38 @@ const AddChatModal: React.FC<{
               leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
             >
               <Dialog.Panel
-                className="relative transform overflow-x-hidden rounded-lg bg-black px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-3xl sm:p-6"
+                className="relative transform  shadow border-t shadow-current overflow-x-hidden rounded-lg bg-black pb-4 pt-5 text-left transition-all sm:my-8 sm:w-full sm:max-w-xl "
                 style={{
                   overflow: "inherit",
                 }}
               >
-                <div>
+                <div className="px-6 border-white/50 border-b-[0.1px] pb-6">
                   <div className="flex justify-between items-center">
                     <Dialog.Title
                       as="h3"
-                      className="text-lg font-semibold leading-6 text-white"
+                      className="text-3xl font-semibold leading-6 text-white"
                     >
                       Create chat
                     </Dialog.Title>
                     <button
                       type="button"
-                      className="rounded-full bg-transparent  focus:outline-none focus:ring-0 focus:ring-white focus:ring-offset-0"
+                      className="bg-transparent text-xs focus:outline-none focus:ring-0 focus:ring-white focus:ring-offset-0 border px-2 py-1   rounded-md"
                       onClick={() => handleClose()}
                     >
-                      <span className="sr-only">Close</span>
-                      <IoClose className="h-6 w-6" aria-hidden="true" />
+                      {/* <span className="sr-only">Close</span> */}
+                      {/* <IoClose className="h-6 w-6" aria-hidden="true" /> */}
+                      ESC
                     </button>
                   </div>
                 </div>
-                <div>
+
+                <div className="px-6">
                   <Switch.Group as="div" className="flex items-center my-5">
                     <Switch
                       checked={isGroupChat}
                       onChange={setIsGroupChat}
                       className={classNames(
-                        isGroupChat ? "bg-secondary" : "bg-zinc-200",
+                        isGroupChat ? "bg-green-800/30 " : "bg-zinc-800/30",
                         "relative outline outline-[1px] outline-white inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:ring-0"
                       )}
                     >
@@ -158,7 +158,7 @@ const AddChatModal: React.FC<{
                         aria-hidden="true"
                         className={classNames(
                           isGroupChat
-                            ? "translate-x-5 bg-success"
+                            ? "translate-x-5 bg-green-500"
                             : "translate-x-0 bg-white",
                           "pointer-events-none inline-block h-5 w-5 transform rounded-full shadow ring-0 transition duration-200 ease-in-out"
                         )}
@@ -167,7 +167,7 @@ const AddChatModal: React.FC<{
                     <Switch.Label as="span" className="ml-3 text-sm">
                       <span
                         className={classNames(
-                          "font-medium text-white",
+                          "text-white/80 ",
                           isGroupChat ? "" : "opacity-40"
                         )}
                       >
@@ -180,6 +180,7 @@ const AddChatModal: React.FC<{
                       <Input
                         placeholder={"Enter a group name..."}
                         value={groupName}
+                        className='"block w-full h-10 rounded-md outline outline-[1px] text-white/80  focus:ring-1  drop-shadow-xl placeholder:text-sm placeholder:text-white/30  outline-zinc-400/30  px-5 bg-zinc-800/30 text-white  placeholder:text-white/70",'
                         onChange={(e) => {
                           setGroupName(e.target.value);
                         }}
@@ -213,10 +214,10 @@ const AddChatModal: React.FC<{
                     <div className="my-5">
                       <span
                         className={classNames(
-                          "font-medium text-white inline-flex items-center"
+                          "inline-flex items-center text-white/80"
                         )}
                       >
-                        <MdGroups className="h-5 w-5 mr-2" /> 
+                        <MdGroups className="h-5 w-5 mr-2" />
                         participant
                       </span>{" "}
                       <div className="flex justify-start items-center flex-wrap gap-2 mt-3">
@@ -255,22 +256,15 @@ const AddChatModal: React.FC<{
                     </div>
                   ) : null}
                 </div>
-                <div className="mt-5 flex justify-between items-center gap-4">
-                  <Button
-                    disabled={creatingChat}
-                    // severity={"secondary"}
-                    onClick={handleClose}
-                    className="w-1/2 bg-red-700"
-                  >
-                    Close
-                  </Button>
-                  <Button
+
+                <div className="px-6 mt-20 w-full flex justify-center items-center gap-4">
+                  <button
                     disabled={creatingChat}
                     onClick={isGroupChat ? createNewGroupChat : createNewChat}
-                    className="w-1/2 bg-green-600"
+                    className="w-1/2 bg-violet-600/80 text-white rounded-md px-4 py-2 font-medium border-2  border-violet-800"
                   >
                     Create
-                  </Button>
+                  </button>
                 </div>
               </Dialog.Panel>
             </Transition.Child>

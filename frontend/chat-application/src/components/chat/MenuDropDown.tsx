@@ -3,8 +3,12 @@ import { Menu } from '@headlessui/react'
 import { HiDotsVertical } from "react-icons/hi";
 
 import { MdGroupAdd } from "react-icons/md";
-import { FaRegUser } from "react-icons/fa";
-import { GoSignOut } from "react-icons/go";
+import { PiSignOutBold } from "react-icons/pi";
+import { RiChatNewLine } from "react-icons/ri";
+import { LuUserCog } from "react-icons/lu";
+
+
+
 import { useAuth } from '../../context/AuthContext';
 
 
@@ -20,7 +24,7 @@ export function MyMenu() {
 
   return (
     <Menu>
-      <Menu.Button >
+      <Menu.Button className="">
         <HiDotsVertical size={20} />
       </Menu.Button>
       <Menu.Items
@@ -29,12 +33,14 @@ export function MyMenu() {
         <div className='border-b border-white/50 p-1'>
           <Menu.Item as={Fragment}>
             {({ active }) => (
-              <p
-                // href={link.href}
-                className={`px-4 py-2 hover:cursor-pointer rounded-md text-sm font-medium ${active ? 'bg-white text-black' : 'text-white'}`}
+              <div
+                className={`px-4 py-2 flex flex-row item-end justify-start hover:cursor-pointer  rounded-md text-sm font-medium  ${active ? 'bg-white text-black' : 'text-white'}`}
               >
-                New Chat
-              </p>
+                <RiChatNewLine size={14} className="mr-2 h-5 " />
+                <p>
+                  New Chat
+                </p>
+              </div>
             )}
           </Menu.Item>
           <Menu.Item as={Fragment}>
@@ -58,7 +64,7 @@ export function MyMenu() {
               <div
                 className={`px-4 py-2 flex flex-row item-end justify-start hover:cursor-pointer  rounded-md text-sm font-medium  ${active ? 'bg-white text-black' : 'text-white'}`}
               >
-                <FaRegUser size={14} className="mr-2 h-5 " />
+                <LuUserCog size={14} className="mr-2 h-5 " />
                 <p
                   className=''
                 >
@@ -73,7 +79,7 @@ export function MyMenu() {
                 className={`px-4 py-2 flex flex-row item-end justify-start hover:cursor-pointer  rounded-md text-sm font-medium  ${active ? 'bg-white text-red-600' : 'text-white'}`}
                 onClick={handleSignOut}
               >
-                <GoSignOut size={14} className="mr-2 h-5 rotate-180" />
+                <PiSignOutBold size={14} className="mr-2 h-5" />
                 <p
                 >
                   Sign Out

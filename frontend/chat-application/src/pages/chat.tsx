@@ -337,7 +337,7 @@ export const Chat = () => {
 
               <button
                 onClick={() => setOpenAddChat(true)}
-                className="rounded-full border-none hover:bg-blue-200/5 text-white p-3 flex flex-shrink-0"
+                className="rounded-full border-none -0 hover:bg-blue-200/5 focus:bg-blue-200/5 text-white p-3 flex flex-shrink-0"
               >
                 <LuMessageSquarePlus size={20} />
               </button>

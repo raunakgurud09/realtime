@@ -34,7 +34,7 @@ const Select: React.FC<{
         <Combobox.Button className="w-full">
           <Combobox.Input
             placeholder={placeholder}
-            className="block w-full rounded-xl border-0 py-4 px-5 bg-secondary outline outline-[1px] outline-zinc-400 text-white font-light placeholder:text-white/70 focus:ring-[1px] focus:ring-white"
+            className='"block w-full h-10 rounded-md outline outline-[1px] text-white/80  focus:ring-1  drop-shadow-xl placeholder:text-sm placeholder:text-white/30  outline-zinc-400/30  px-5 bg-zinc-800/30 text-white  placeholder:text-white/70",'
             onChange={(e: any) => {
               setLocalOptions(
                 options.filter((op) => op.label.includes(e.target.value))
@@ -52,14 +52,14 @@ const Select: React.FC<{
         </Combobox.Button>
 
         {localOptions.length > 0 && (
-          <Combobox.Options className="outline outline-[1px] outline-zinc-400 absolute z-10 mt-2 p-2 max-h-60 w-full overflow-auto rounded-2xl bg-black text-base shadow-lg ring-opacity-5 focus:outline-none sm:text-sm">
+          <Combobox.Options className="outline outline-[1px] outline-zinc-400 absolute z-10 mt-2 p-2 max-h-60 w-full overflow-auto rounded-md bg-black text-base shadow-lg ring-opacity-5 focus:outline-none sm:text-sm">
             {localOptions.map((option) => (
               <Combobox.Option
                 key={option.value}
                 value={option}
                 className={({ active }: any) =>
                   classNames(
-                    "cursor-pointer relative rounded-2xl select-none py-4 pl-3 pr-9",
+                    "cursor-pointer relative rounded-md select-none hover:bg-white hover:text-black py-2 pl-3 pr-9",
                     active ? "bg-dark text-white" : "text-white"
                   )
                 }
