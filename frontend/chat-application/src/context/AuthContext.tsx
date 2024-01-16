@@ -4,7 +4,7 @@ import { requestHandler } from "../utils";
 import { LocalStorage } from "../utils/LocalStorage";
 import { loginUser, logoutUser, registerUser } from "../utils/axios";
 import { useNavigate } from "react-router-dom";
-import Loader from "../components/Loader";
+import { LoadingPage } from "../components/LoadingPage";
 
 
 
@@ -104,7 +104,7 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   // Provide authentication-related data and functions through the context
   return (
     <AuthContext.Provider value={{ user, login, register, logout, token }}>
-      {isLoading ? <Loader /> : children} {/* Display a loader while loading */}
+      {isLoading ? <LoadingPage /> : children} {/* Display a loader while loading */}
     </AuthContext.Provider>
   );
 };

@@ -1,10 +1,14 @@
 import React, { useState } from 'react'
 import { useAuth } from '../context/AuthContext'
 
+import { FaEye } from "react-icons/fa6";
+
+
 export const Register = () => {
 
 
   const { register } = useAuth()
+  const [visible, setVisible] = useState(false)
 
   const [data, setData] = useState({
     username: "",
@@ -27,11 +31,11 @@ export const Register = () => {
 
   return (
     <div className="pointer-events-none relative flex h-screen flex-col items-center justify-center gap-8 overflow-hidden [&>*]:pointer-events-auto">
-      <div className="absolute left-0 z-30 h-screen max-w-2xl w-full p-8 px-28 flex justify-center items-start gap-5 flex-col bg-dark shadow-md bg-black">
 
+      <div className="absolute left-0 z-30 h-screen max-w-2xl w-full p-8 px-28 flex justify-center items-start gap-5 flex-col bg-dark shadow-md bg-black">
         <div className='flex flex-col item-start space-x-1 space-y-1'>
           <h1 className="text-4xl flex-col font-bold text-violet-600">
-          Get started
+            Get started
           </h1>
           <p className='text-xs font-medium text-white/80'>Create a new account</p>
         </div>
@@ -59,20 +63,25 @@ export const Register = () => {
               onChange={handleDataChange("email")}
             />
           </div>
-          <div className="w-full">
+          <div className="w-full relative">
             <label className='text-sm'>Password</label>
             <input
-              type='password'
+              type={visible ? 'text' : 'password'}
               placeholder='************'
               value={data.password}
-              className='"block w-full h-10 rounded-md outline outline-[1px] text-white/80  focus:ring-1  drop-shadow-xl placeholder:text-sm placeholder:text-white/30  outline-zinc-400/30  px-5 bg-zinc-800/30 text-white  placeholder:text-white/70",'
+              className="block w-full h-10 rounded-md outline outline-[1px] text-white/80  focus:ring-1  drop-shadow-xl placeholder:text-sm placeholder:text-white/30  outline-zinc-400/30  px-5 bg-zinc-800/30 text-white  "
               onChange={handleDataChange("password")}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') handleRegister();
+                else return;
+              }}
             />
+            <FaEye onClick={() => { setVisible((prev) => !prev) }} className="text-white/70 hover:cursor-pointer absolute right-4 top-9" />
           </div>
           {/* Button to initiate the login process */}
         </div>
         <button
-          className='rounded-md w-full px-8 py-2 bg-violet-800 font-semibold'
+          className='rounded-md w-full px-8 py-2 bg-violet-800 font-semibold border-2 border-violet-950'
           onClick={handleRegister}
         >
           Register
@@ -94,16 +103,18 @@ export const Register = () => {
 
         <div className='w-full'>
           <button className='w-full py-3 px-6 rounded-md item-center bg-black text-white font-medium border border-white'>
-            Google 
+            Google
           </button>
         </div>
 
       </div>
+
+      {/* star move animation */}
       <div className="stars absolute -left-full -z-50 mt-[56px] h-screen w-[200%]" />
       <div className="stars absolute -left-full -z-40 mt-[56px] h-1/2 w-[400%] scale-[2]" />
       <div className="stars absolute -left-full -z-30 mt-[56px] h-1/3 w-[600%] scale-[3]" />
     </div>
 
-    
+
   )
 }
