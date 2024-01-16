@@ -39,10 +39,10 @@ const MessageItem: React.FC<{
         />
         <div
           className={classNames(
-            "p-4 rounded-3xl flex flex-col",
+            "p-4 px-8 rounded-2xl flex flex-col",
             isOwnMessage
-              ? "order-1 rounded-br-none bg-black/15"
-              : "order-2 rounded-bl-none bg-black/15"
+              ? "order-1 rounded-br-none bg-zinc-900"
+              : "order-2 rounded-bl-none bg-zinc-900"
           )}
         >
           {isGroupChatMessage && !isOwnMessage ? (

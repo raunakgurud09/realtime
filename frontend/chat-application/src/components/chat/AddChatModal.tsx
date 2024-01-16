@@ -119,7 +119,7 @@ const AddChatModal: React.FC<{
               leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
             >
               <Dialog.Panel
-                className="relative transform  shadow border-t shadow-current overflow-x-hidden rounded-lg bg-black pb-4 pt-5 text-left transition-all sm:my-8 sm:w-full sm:max-w-xl "
+                className="relative transform border-[0.1px] border-white/30 shadow-current overflow-x-hidden rounded-lg bg-zinc-900 pb-4 pt-5 text-left transition-all sm:my-8 sm:w-full sm:max-w-xl "
                 style={{
                   overflow: "inherit",
                 }}
@@ -261,7 +261,7 @@ const AddChatModal: React.FC<{
                   <button
                     disabled={creatingChat}
                     onClick={isGroupChat ? createNewGroupChat : createNewChat}
-                    className="w-1/2 bg-violet-600/80 text-white rounded-md px-4 py-2 font-medium border-2  border-violet-800"
+                    className="w-1/2 bg-violet-600/80 text-white rounded-md px-4 py-2 font-medium border-2  border-violet-900"
                   >
                     Create
                   </button>

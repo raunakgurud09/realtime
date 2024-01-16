@@ -26,8 +26,8 @@ export const Register = () => {
 
 
   return (
-    <div className="flex justify-center  flex-col h-screen w-3/5 items-start ">
-      <div className="h-screen max-w-2xl w-full p-8 px-28 flex justify-center items-start gap-5 flex-col bg-dark shadow-md bg-black">
+    <div className="pointer-events-none relative flex h-screen flex-col items-center justify-center gap-8 overflow-hidden [&>*]:pointer-events-auto">
+      <div className="absolute left-0 z-30 h-screen max-w-2xl w-full p-8 px-28 flex justify-center items-start gap-5 flex-col bg-dark shadow-md bg-black">
 
         <div className='flex flex-col item-start space-x-1 space-y-1'>
           <h1 className="text-4xl flex-col font-bold text-violet-600">
@@ -99,7 +99,11 @@ export const Register = () => {
         </div>
 
       </div>
+      <div className="stars absolute -left-full -z-50 mt-[56px] h-screen w-[200%]" />
+      <div className="stars absolute -left-full -z-40 mt-[56px] h-1/2 w-[400%] scale-[2]" />
+      <div className="stars absolute -left-full -z-30 mt-[56px] h-1/3 w-[600%] scale-[3]" />
     </div>
 
+    
   )
 }

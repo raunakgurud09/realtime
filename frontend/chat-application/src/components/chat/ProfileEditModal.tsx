@@ -62,6 +62,7 @@ export const ProfileEditModal: React.FC<{
               >
                 <div className='flex justify-start items-center bg-black gap-4 pt-20 pb-5 px-6 border-b border-white/20 rounded-tr-3xl'>
                   <IoArrowBack size={20}
+                    role="button"
                     className="hover:cursor-pointer"
                     onClick={() => handleClose()}
                   />

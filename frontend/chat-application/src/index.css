@@ -43,7 +43,83 @@ a:hover {
   background: #565352;
 }
 
+.stars {
+  background-size: 200px 200px;
+  background-image: radial-gradient(2px 2px at 40px 60px, #ccc, rgba(0, 0, 0, 0)),
+    radial-gradient(2px 2px at 20px 50px, white, rgba(0, 0, 0, 0)),
+    radial-gradient(2px 2px at 30px 100px, white, rgba(0, 0, 0, 0)),
+    radial-gradient(2px 2px at 40px 60px, white, rgba(0, 0, 0, 0)),
+    radial-gradient(2px 2px at 110px 90px, white, rgba(0, 0, 0, 0)),
+    radial-gradient(2px 2px at 190px 150px, white, rgba(0, 0, 0, 0));
+  background-repeat: repeat;
+}
 
+.stars:first-of-type {
+  animation: stars-move-right-1 200s linear infinite;
+}
+
+.stars:nth-of-type(2) {
+  background-image: radial-gradient(2px 2px at 25px 35px, #ccc, rgba(0, 0, 0, 0)),
+    radial-gradient(2px 2px at 55px 20px, white, rgba(0, 0, 0, 0)),
+    radial-gradient(2px 2px at 69px 42px, white, rgba(0, 0, 0, 0)),
+    radial-gradient(2px 2px at 42px 69px, white, rgba(0, 0, 0, 0)),
+    radial-gradient(2px 2px at 32px 90px, white, rgba(0, 0, 0, 0)),
+    radial-gradient(2px 2px at 150px 190px, white, rgba(0, 0, 0, 0));
+  animation: stars-move-right-2 111s linear infinite;
+}
+
+.stars:nth-of-type(3) {
+  background-image: radial-gradient(2px 2px at 60px 40px, #ccc, rgba(0, 0, 0, 0)),
+    radial-gradient(2px 2px at 50px 20px, white, rgba(0, 0, 0, 0)),
+    radial-gradient(2px 2px at 100px 30px, white, rgba(0, 0, 0, 0)),
+    radial-gradient(2px 2px at 60px 40px, white, rgba(0, 0, 0, 0)),
+    radial-gradient(2px 2px at 90px 110px, white, rgba(0, 0, 0, 0)),
+    radial-gradient(2px 2px at 150px 190px, white, rgba(0, 0, 0, 0));
+  animation: stars-move-right-3 69s linear infinite;
+}
+
+@keyframes stars-move-right-1 {
+  to {
+    transform: translateX(100%);
+  }
+}
+@keyframes stars-move-right-2 {
+  to {
+    transform: translateX(100%) scale(2);
+  }
+}
+@keyframes stars-move-right-3 {
+  to {
+    transform: translateX(100%) scale(3);
+  }
+}
+
+
+.fancy-border-gradient::before {
+  inset: 0;
+  content: '';
+  --angle: 0deg;
+  position: absolute;
+  border-radius: inherit;
+  padding: 1.5px; /* control the border thickness */
+  background: conic-gradient(
+    from var(--angle),
+    #3178c622,
+    #3178c644 35%,
+    #3178c688 39%,
+    #3178c6,
+    #3178c688 61%,
+    #3178c644 65%,
+    #3178c622
+  );
+  -webkit-mask-composite: xor;
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  animation: 3s rotate linear infinite;
+  mask-composite: exclude;
+  pointer-events: none;
+}
 
 @media (prefers-color-scheme: light) {
   :root {

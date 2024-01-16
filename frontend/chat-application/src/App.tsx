@@ -4,11 +4,21 @@ import { Register } from "./pages/Register"
 import { PrivateRoute } from "./components/PrivateRoute"
 import { Login } from "./pages/Login"
 import { Chat } from "./pages/chat"
+import { NotFound } from "./pages/not-found"
 
 function App() {
 
   return (
     <Routes>
+
+      <Route
+        path="/"
+        element={
+          <h1>home</h1>
+        }
+      >
+
+      </Route>
 
       {/* private route */}
       <Route
@@ -45,8 +55,9 @@ function App() {
 
 
 
+
       {/* All unwanted routes */}
-      <Route path="*" element={<p>404 Not found</p>} />
+      <Route path="*" element={<NotFound />} />
     </Routes>
   )
 }
