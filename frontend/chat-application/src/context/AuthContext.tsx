@@ -22,9 +22,9 @@ const AuthContext = createContext<{
 }>({
   user: null,
   token: null,
-  login: async () => {},
-  register: async () => {},
-  logout: async () => {},
+  login: async () => { },
+  register: async () => { },
+  logout: async () => { },
 });
 
 // Create a hook to access the AuthContext
@@ -64,7 +64,7 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     password: string;
   }) => {
     await requestHandler(
-      async () => await registerUser(data),
+      async () => { console.log(data); return await registerUser(data) },
       setIsLoading,
       () => {
         alert("Account created successfully! Go ahead and login.");

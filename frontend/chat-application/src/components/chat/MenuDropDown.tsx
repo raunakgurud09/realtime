@@ -70,7 +70,7 @@ export function MyMenu() {
           <Menu.Item as={Fragment}>
             {({ active }) => (
               <div
-                className={`px-4 py-2 flex flex-row item-end justify-start hover:cursor-pointer  rounded-md text-sm font-medium  ${active ? 'bg-white text-black' : 'text-white'}`}
+                className={`px-4 py-2 flex flex-row item-end justify-start hover:cursor-pointer  rounded-md text-sm font-medium  ${active ? 'bg-white text-red-600' : 'text-white'}`}
                 onClick={handleSignOut}
               >
                 <GoSignOut size={14} className="mr-2 h-5 rotate-180" />
