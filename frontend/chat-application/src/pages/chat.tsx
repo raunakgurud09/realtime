@@ -294,6 +294,7 @@ export const Chat = () => {
       socket.off(UPDATE_GROUP_NAME_EVENT, onGroupNameChange);
     };
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [socket, chats]);
 
 
