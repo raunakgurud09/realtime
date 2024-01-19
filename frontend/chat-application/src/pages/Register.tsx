@@ -24,7 +24,7 @@ export const Register = () => {
   }
 
 
-  const handleRegister = async () => { console.log('submitted'); await register(data) }
+  const handleRegister = async () => { await register(data) }
 
 
 

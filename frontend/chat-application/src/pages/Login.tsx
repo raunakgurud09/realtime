@@ -21,8 +21,7 @@ export const Login = () => {
   }
 
 
-  const handleLogin = async () => { console.log('submitted'); await login(data) }
-  // const handleLogin = async () => { console.log('submitted') }
+  const handleLogin = async () => { await login(data) }
 
 
   return (
