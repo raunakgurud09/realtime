@@ -1,18 +1,22 @@
-FROM node
+# Stage 1
+FROM node:18 as builder
 
-RUN mkdir -p /usr/app/realtime && chown -R node:node /usr/app/realtime
+WORKDIR /build 
 
-WORKDIR /usr/app/realtime
+COPY package*.json .
 
-# Copy package json and yarn lock only to optimise the image building
-COPY yarn.lock ./
+RUN npm install
 
-USER node
+COPY . .
+RUN npm run build
 
-RUN yarn install --pure-lockfile
+# Stage 2
+FROM node:18 as runner
 
-COPY --chown=node:node . .
+WORKDIR /app
+COPY --from=builder build/package*.json .
+COPY --from=builder build/node_modules node_modules
+COPY --from=builder build/dist dist/
+COPY --from=builder build/.env .
 
-EXPOSE 8080
-
-CMD [ "npm", "start" ]
+CMD [ "npm","start" ]

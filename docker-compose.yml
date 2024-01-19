@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  backend:
+    image: realtime
+    container_name: backend
+    build: .
+    ports:
+      - 8080:8080
+    volumes:
+      - ./:/app
+      - /app/node_modules
+    env_file:
+      - ./.env
+    depends_on:
+      - mongodb
+  mongodb:
+    image: mongo
+    container_name: mongodb
+    volumes:
+      - data:/data/db
+    ports:
+      - 27017:27017
+
+volumes:
+  data:
