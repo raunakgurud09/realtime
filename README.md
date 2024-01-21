@@ -1,6 +1,6 @@
 # Realtime
 
-This repository contains a basic chat/video application built with Node.js, Next.js, and Socket.IO, WebRTC. The application demonstrates the integration of these technologies to create a real-time web application.
+This repository contains a web application built with Node.js, react.js, and Socket.IO, WebRTC. The application demonstrates the integration of these technologies to create a real-time web application. The scope of this application to to go beyond basic application and implement websocket connection for scale using redis and kafka
 
 ## Prerequisites
 
