@@ -5,6 +5,7 @@ import { PrivateRoute } from "./components/PrivateRoute"
 import { Login } from "./pages/Login"
 import { Chat } from "./pages/chat"
 import { NotFound } from "./pages/not-found"
+import Home from "./pages/Home"
 
 function App() {
 
@@ -14,7 +15,7 @@ function App() {
       <Route
         path="/"
         element={
-          <h1>home</h1>
+          <Home />
         }
       >
 
