@@ -4,11 +4,22 @@ import { Server, Socket } from "socket.io";
 import { AvailableChatEvents, ChatEventEnum } from "../constants";
 import { ApiError } from "../utils/ApiError";
 import { User } from "../models/auth/user.model";
+import dotenv from "dotenv";
+
+dotenv.config({
+  path: "./.env",
+});
 
 import Redis from "ioredis";
 
-const pub = new Redis();
-const sub = new Redis();
+const pub = new Redis({
+  port: +process.env.REDIS_PORT, // Redis port
+  host: process.env.REDIS_HOST, // Redis host
+});
+const sub = new Redis({
+  port: +process.env.REDIS_PORT, // Redis port
+  host: process.env.REDIS_HOST, // Redis host
+});
 
 /**
  * @description This function is responsible to allow user to join the chat represented by chatId (chatId). event happens when user switches between the chats
