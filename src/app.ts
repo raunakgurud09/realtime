@@ -4,7 +4,7 @@ import cors from "cors";
 import { rateLimit } from "express-rate-limit";
 import { createServer } from "http";
 import { Server } from "socket.io";
-import { initializeSocketIO } from "./socket";
+import { initializeServer } from "./socket";
 import { ApiError } from "./utils/ApiError";
 import dotenv from "dotenv";
 
@@ -72,6 +72,9 @@ app.use("/api/v1/users", userRouter);
 app.use("/api/v1/chat-app/chats", chatRouter);
 app.use("/api/v1/chat-app/messages", messageRouter);
 
-initializeSocketIO(io);
+initializeServer(io, () => {
+  console.log("⚡ Pub/Sub Socket server initialized");
+});
+// initializeSocketIO(io);
 
 export { httpServer };

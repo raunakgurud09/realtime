@@ -5,6 +5,11 @@ import { AvailableChatEvents, ChatEventEnum } from "../constants";
 import { ApiError } from "../utils/ApiError";
 import { User } from "../models/auth/user.model";
 
+import Redis from "ioredis";
+
+const pub = new Redis();
+const sub = new Redis();
+
 /**
  * @description This function is responsible to allow user to join the chat represented by chatId (chatId). event happens when user switches between the chats
  * @param {Socket<import("socket.io/dist/typed-events").DefaultEventsMap, import("socket.io/dist/typed-events").DefaultEventsMap, import("socket.io/dist/typed-events").DefaultEventsMap, any>} socket
@@ -43,63 +48,78 @@ const mountParticipantStoppedTypingEvent = (socket) => {
  *
  * @param {Server<import("socket.io/dist/typed-events").DefaultEventsMap, import("socket.io/dist/typed-events").DefaultEventsMap, import("socket.io/dist/typed-events").DefaultEventsMap, any>} io
  */
-const initializeSocketIO = (io) => {
-  return io.on("connection", async (socket) => {
-    try {
-      // parse the cookies from the handshake headers (This is only possible if client has `withCredentials: true`)
-      const cookies = cookie.parse(socket.handshake.headers?.cookie || "");
+const connection = async (socket) => {
+  try {
+    // parse the cookies from the handshake headers (This is only possible if client has `withCredentials: true`)
+    const cookies = cookie.parse(socket.handshake.headers?.cookie || "");
 
-      let token = cookies?.accessToken; // get the accessToken
+    let token = cookies?.accessToken; // get the accessToken
 
-      if (!token) {
-        // If there is no access token in cookies. Check inside the handshake auth
-        token = socket.handshake.auth?.token;
-      }
-
-      if (!token) {
-        // Token is required for the socket to work
-        throw new ApiError(401, "Un-authorized handshake. Token is missing");
-      }
-
-      const decodedToken: any = jwt.verify(
-        token,
-        process.env.ACCESS_TOKEN_SECRET
-      ); // decode the token
-
-      const user = await User.findById(decodedToken?._id).select(
-        "-password -refreshToken -emailVerificationToken -emailVerificationExpiry"
-      );
-
-      // retrieve the user
-      if (!user) {
-        throw new ApiError(401, "Un-authorized handshake. Token is invalid");
-      }
-      socket.user = user; // mount te user object to the socket
-
-      // We are creating a room with user id so that if user is joined but does not have any active chat going on.
-      // still we want to emit some socket events to the user.
-      // so that the client can catch the event and show the notifications.
-      socket.join(user._id.toString());
-      socket.emit(ChatEventEnum.CONNECTED_EVENT); // emit the connected event so that client is aware
-      console.log("User connected 🗼. userId: ", user._id.toString());
-
-      // Common events that needs to be mounted on the initialization
-      mountJoinChatEvent(socket);
-      mountParticipantTypingEvent(socket);
-      mountParticipantStoppedTypingEvent(socket);
-
-      socket.on(ChatEventEnum.DISCONNECT_EVENT, () => {
-        console.log("user has disconnected 🚫. userId: " + socket.user?._id);
-        if (socket.user?._id) {
-          socket.leave(socket.user._id);
-        }
-      });
-    } catch (error) {
-      socket.emit(
-        ChatEventEnum.SOCKET_ERROR_EVENT,
-        error?.message || "Something went wrong while connecting to the socket."
-      );
+    if (!token) {
+      // If there is no access token in cookies. Check inside the handshake auth
+      token = socket.handshake.auth?.token;
     }
+
+    if (!token) {
+      // Token is required for the socket to work
+      throw new ApiError(401, "Un-authorized handshake. Token is missing");
+    }
+
+    const decodedToken: any = jwt.verify(
+      token,
+      process.env.ACCESS_TOKEN_SECRET
+    ); // decode the token
+
+    const user = await User.findById(decodedToken?._id).select(
+      "-password -refreshToken -emailVerificationToken -emailVerificationExpiry"
+    );
+
+    // retrieve the user
+    if (!user) {
+      throw new ApiError(401, "Un-authorized handshake. Token is invalid");
+    }
+    socket.user = user; // mount te user object to the socket
+
+    // We are creating a room with user id so that if user is joined but does not have any active chat going on.
+    // still we want to emit some socket events to the user.
+    // so that the client can catch the event and show the notifications.
+    socket.join(user._id.toString());
+    socket.emit(ChatEventEnum.CONNECTED_EVENT); // emit the connected event so that client is aware
+    console.log("User connected 🗼. userId: ", user._id.toString());
+
+    // Common events that needs to be mounted on the initialization
+    mountJoinChatEvent(socket);
+    mountParticipantTypingEvent(socket);
+    mountParticipantStoppedTypingEvent(socket);
+
+    socket.on(ChatEventEnum.DISCONNECT_EVENT, () => {
+      console.log("user has disconnected 🚫. userId: " + socket.user?._id);
+      if (socket.user?._id) {
+        socket.leave(socket.user._id);
+      }
+    });
+  } catch (error) {
+    socket.emit(
+      ChatEventEnum.SOCKET_ERROR_EVENT,
+      error?.message || "Something went wrong while connecting to the socket."
+    );
+  }
+};
+
+export const initializeServer = (io, cb) => {
+  pub.on("ready", () => {
+    sub.on("ready", () => {
+      sub.subscribe("message");
+
+      io.on("connection", connection);
+
+      sub.on("message", async (channel, message: any) => {
+        const res = await JSON.parse(message);
+        io.in(res.roomId).emit("messageReceived", res.payload);
+      });
+
+      cb();
+    });
   });
 };
 
@@ -111,8 +131,12 @@ const initializeSocketIO = (io) => {
  * @param {any} payload - Data that should be sent when emitting the event
  * @description Utility function responsible to abstract the logic of socket emission via the io instance
  */
-const emitSocketEvent = (req, roomId, event, payload) => {
-  req.app.get("io").in(roomId).emit(event, payload);
+const emitSocketEvent = async (req, roomId, event, payload) => {
+  // For Single server
+  // req.app.get("io").in(roomId).emit(event, payload);
+
+  // For redis Pub/Sub
+  await pub.publish("message", JSON.stringify({ roomId, payload }));
 };
 
-export { initializeSocketIO, emitSocketEvent };
+export { emitSocketEvent };
