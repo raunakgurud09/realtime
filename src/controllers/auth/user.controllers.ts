@@ -6,7 +6,11 @@ import { ApiResponse } from "../../utils/ApiResponse";
 import { asyncHandler } from "../../utils/asyncHandler";
 import { Request, Response } from "express";
 import crypto from "crypto";
-import { getLocalPath, getStaticFilePath, removeLocalFile } from "../../utils/helpers";
+import {
+  getLocalPath,
+  getStaticFilePath,
+  removeLocalFile,
+} from "../../utils/helpers";
 
 const generateAccessAndRefreshTokens = async (userId: string) => {
   try {
@@ -32,9 +36,13 @@ export const registerUser: any = asyncHandler(
   async (req: Request, res: Response) => {
     const { email, username, password, role } = req.body;
 
+    console.count();
+
+    console.count();
     const existingUser = await User.findOne({
       $or: [{ username, email }],
     });
+    console.count();
 
     if (existingUser) {
       throw new ApiError(409, "User with email or username exists already", []);
@@ -56,16 +64,16 @@ export const registerUser: any = asyncHandler(
     user.emailVerificationExpiry = tokenExpiry;
     await user.save({ validateBeforeSave: false });
 
-    await sendEmail({
-      email: user?.email,
-      subject: "Please verify your email",
-      mailgen: emailVerificationMailgenContent(
-        user.username,
-        `${req.protocol}://${req.get(
-          "host"
-        )}/api/v1/users/verify-email/${unHashedToken}`
-      ),
-    });
+    // await sendEmail({
+    //   email: user?.email,
+    //   subject: "Please verify your email",
+    //   mailgen: emailVerificationMailgenContent(
+    //     user.username,
+    //     `${req.protocol}://${req.get(
+    //       "host"
+    //     )}/api/v1/users/verify-email/${unHashedToken}`
+    //   ),
+    // });
 
     const createdUser = await User.findById(user._id).select(
       "-password -refreshToken -emailVerificationToken -emailVerificationExpiry"

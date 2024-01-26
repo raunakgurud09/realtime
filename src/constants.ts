@@ -1,4 +1,7 @@
-export const DB_NAME = "chat-application";
+export const DB_NAME =
+  process.env.NODE_ENV === "development"
+    ? "chat-application"
+    : "chat-application-test";
 export const USER_TEMPORARY_TOKEN_EXPIRY = 20 * 60 * 1000; // 20 minutes
 
 export const UserRolesEnum = {
@@ -15,7 +18,6 @@ export const UserLoginType = {
 };
 export type TUserLoginType = "GOOGLE" | "GITHUB" | "EMAIL_PASSWORD";
 export const AvailableSocialLogins = Object.values(UserLoginType);
-
 
 export const ChatEventEnum = Object.freeze({
   // ? once user is ready to go

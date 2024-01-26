@@ -12,7 +12,7 @@ dotenv.config({
   path: "./.env",
 });
 
-const app = express();
+export const app = express();
 
 const httpServer = createServer(app);
 
@@ -72,6 +72,6 @@ app.use("/api/v1/users", userRouter);
 app.use("/api/v1/chat-app/chats", chatRouter);
 app.use("/api/v1/chat-app/messages", messageRouter);
 
-initializeSocketIO(io);
+// initializeSocketIO(io);
 
 export { httpServer };
