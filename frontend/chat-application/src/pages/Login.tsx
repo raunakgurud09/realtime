@@ -74,7 +74,6 @@ export const Login = () => {
           Login
         </button>
 
-
         {/* Link to the registration page */}
         <div className='w-full flex flex-col space-y-1 justify-center items-center'>
           <small className="text-zinc-300">
