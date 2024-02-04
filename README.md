@@ -4,7 +4,7 @@ This repository contains a web application built with Node.js, react.js, and Soc
 
 # Blog
 Documented the entire project journey, encompassing every aspect from architectural design, technology selection to scalability considerations and the project's comprehensive implementation.
-![websockets-unlocked](https://raunakgurud.hashnode.dev/series/websockets-unlocked)
+[websockets-unlocked](https://raunakgurud.hashnode.dev/series/websockets-unlocked)
 
 ## Prerequisites
 
