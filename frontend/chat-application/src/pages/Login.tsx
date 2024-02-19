@@ -1,11 +1,21 @@
 import React, { useState } from 'react'
 import { useAuth } from '../context/AuthContext'
 import { FaEye } from 'react-icons/fa6'
+import { TTestUsers, testUsers } from '../data'
 
 export const Login = () => {
 
   const { login } = useAuth()
   const [visible, setVisible] = useState(false)
+
+  const [users, setUsers] = useState<TTestUsers[]>(testUsers)
+
+  const handleRemoveUser = (id: number) => {
+    // TODO: fix 
+    // Both clear if clicked on 2
+    setUsers((u) => u.filter((_, index) => index === id));
+    console.log(users)
+  }
 
 
   const [data, setData] = useState({
@@ -27,6 +37,17 @@ export const Login = () => {
   return (
     <div className="pointer-events-none relative flex h-screen flex-col items-center justify-center gap-8 overflow-hidden [&>*]:pointer-events-auto">
 
+      <div className='absolute top-5 right-5 space-y-2 w-60'>
+        {
+          users.map((t, i) => (
+            <div key={i} className="relative bg-blue-600/50 border-2 rounded-md border-blue-700 px-4 py-2 pt-5">
+              <button onClick={() => handleRemoveUser(t._id)} className='absolute top-0 right-2 font-bold '> x</button>
+              <p><span className='font-semibold'>username</span>: {t.username} </p>
+              <p><span className='font-semibold'>password</span>: {t.password}</p>
+            </div>
+          ))
+        }
+      </div>
       <div className="absolute left-0 z-30 h-screen max-w-2xl w-full p-8 px-28 flex justify-center items-start gap-5 flex-col bg-dark shadow-md bg-black">
 
         <div className='flex flex-col item-start'>
@@ -36,6 +57,7 @@ export const Login = () => {
           <p className='text-xs font-medium text-white/80'>Welcome! Sign in to your account</p>
         </div>
 
+
         {/* input for entering the username */}
         <div className='flex flex-col w-full space-y-2'>
 
@@ -43,7 +65,7 @@ export const Login = () => {
             <label className='text-sm'>Username</label>
             <input
               type='email'
-              placeholder='you@exampl.com'
+              placeholder='user_name'
               value={data.username}
               className='"block w-full h-10 rounded-md outline outline-[1px] text-white/80  focus:ring-1  drop-shadow-xl placeholder:text-sm placeholder:text-white/30  outline-zinc-400/30  px-5 bg-zinc-800/30 text-white  placeholder:text-white/70",'
               onChange={handleDataChange("username")}
@@ -88,7 +110,7 @@ export const Login = () => {
         </div>
 
         <div className='w-full'>
-          <button className='w-full py-3 px-6 rounded-md item-center bg-black text-white font-medium border border-white'>
+          <button onClick={() => alert('working on it')} className='w-full py-3 px-6 rounded-md item-center bg-black text-white font-medium border border-white'>
             Google
           </button>
         </div>

@@ -102,7 +102,7 @@ export const Register = () => {
         </div>
 
         <div className='w-full'>
-          <button className='w-full py-3 px-6 rounded-md item-center bg-black text-white font-medium border border-white'>
+          <button onClick={()=>alert('working on it')} className='w-full py-3 px-6 rounded-md item-center bg-black text-white font-medium border border-white'>
             Google
           </button>
         </div>

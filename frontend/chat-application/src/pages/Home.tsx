@@ -7,43 +7,53 @@ const Home = () => {
   const handleToLogin = () => {
     navigate("/login");
   }
-  const handleToRegister = () => {
-    navigate("/login");
-  }
-
-
 
   return (
-    <main className="w-screen h-screen flex flex- justify-center items-center px-8">
-      <div className="w-2/5 flex flex-col items-start justify-center">
-        <h1 className="text-8xl mb-48 flex-col font-bold text-violet-600">Realtime</h1>
-        <div className="flex flex-col gap-4 w-3/4 ">
+    <main className="w-screen h-screen flex flex- justify-center items-center px-8 bg-black">
+      <div className="w-3/5 flex flex-col items-center justify-center">
+        <h1 className="text-8xl mb-8 flex-col font-bold text-violet-600">Realtime</h1>
+
+        <div className="flex items-center flex-col">
+          <p className="text-white/70 text-center px-8">A web application built with Node.js, react.js, and Socket.IO, WebRTC. The application demonstrates the integration of these technologies to create a real-time web application. This application to to go beyond basic application and implement websocket connection for scale using redis and kafka for scalability and performance </p>
+
+          <div className="space-x-5 mt-5">
+            <a className="text-primary hover:underline" target="_blank" href="https://github.com/raunakgurud09/realtime">
+              Source code
+            </a>
+            <a className="text-primary hover:underline" target="_blank" href="https://raunakgurud.hashnode.dev/series/websockets-unlocked">
+              Blog about system design
+            </a>
+            <a className="text-primary hover:underline" target="_blank" href="https://raunakgurud.vercel.app">
+              Author
+            </a>
+
+          </div>
+        </div>
+
+        <div className="flex flex-col gap-4 w-1/4 mt-10 ">
           <button
             className='rounded-md w-full px-8 py-2 bg-violet-800 font-semibold'
             onClick={handleToLogin}
           >
             Login
           </button>
-          <button
-            className='rounded-md w-full px-8 py-2 bg-violet-800 font-semibold'
-            onClick={handleToRegister}
-          >
-            Register
-          </button>
         </div>
       </div>
 
-      <div className="w-3/5 pointer-events-none relative -mt-[56px] flex h-screen flex-col items-center justify-center gap-8 overflow-hidden [&>*]:pointer-events-auto">
-        <div className="stars absolute -left-full -z-50 mt-[56px] h-screen w-[200%]" />
-        <div className="stars absolute -left-full -z-40 mt-[56px] h-1/2 w-[400%] scale-[2]" />
-        <div className="stars absolute -left-full -z-30 mt-[56px] h-1/3 w-[600%] scale-[3]" />
-        <img src="/public/chat-page.png" alt="chat-page" className="z-30 w-[500px] h-[234px] hover:scale-[1.01]   border rounded-md object-cover absolute bottom-48 left-[20px]" />
-        <img src="/public/login-page.png" alt="login-page" className="z-40 w-[500px] h-[234px] hover:scale-[1.01] border rounded-md object-contain absolute bottom-8" />
-        <img src="/public/chat-modal.png" alt="chat-modal" className="z-20 w-[500px]  h-[234px] hover:scale-[1.01]  border rounded-md object-contain absolute top-[100px] right-2" />
-      </div>
 
     </main>
   )
 }
 
 export default Home
+
+// <div>
+//           {
+//             testUsers.map((t, i) => (
+//               <div key={i} className="bg-blue-400/20 border rounded-md border-blue-700 px-4 py-2">
+//                 <p>username - {t.username} </p>
+//                 <p>password - {t.password}</p>
+//               </div>
+//             ))
+//           }
+//         </div>
