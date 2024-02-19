@@ -2,6 +2,10 @@
 
 This repository contains a web application built with Node.js, react.js, and Socket.IO, WebRTC. The application demonstrates the integration of these technologies to create a real-time web application. The scope of this application to to go beyond basic application and implement websocket connection for scale using redis and kafka
 
+# Blog
+Documented the entire project journey, encompassing every aspect from architectural design, technology selection to scalability considerations and the project's comprehensive implementation.
+[websockets-unlocked](https://raunakgurud.hashnode.dev/series/websockets-unlocked)
+
 ## Prerequisites
 
 Make sure you have the following installed:
