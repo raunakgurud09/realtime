@@ -11,7 +11,8 @@ const Home = () => {
   return (
     <main className="w-screen h-screen flex flex- justify-center items-center px-8 bg-black">
       <div className="w-3/5 flex flex-col items-center justify-center">
-        <h1 className="text-8xl mb-8 flex-col font-bold text-violet-600">Realtime</h1>
+        <h1 className="text-8xl  flex-col font-bold text-violet-600">Realtime</h1>
+        <p className="mb-8">Working in progress 👷‍♂️🛠️</p>
 
         <div className="flex items-center flex-col">
           <p className="text-white/70 text-center px-8">A web application built with Node.js, react.js, and Socket.IO, WebRTC. The application demonstrates the integration of these technologies to create a real-time web application. This application to to go beyond basic application and implement websocket connection for scale using redis and kafka for scalability and performance </p>
