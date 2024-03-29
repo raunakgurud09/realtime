@@ -36,13 +36,9 @@ export const registerUser: any = asyncHandler(
   async (req: Request, res: Response) => {
     const { email, username, password, role } = req.body;
 
-    console.count();
-
-    console.count();
     const existingUser = await User.findOne({
       $or: [{ username, email }],
     });
-    console.count();
 
     if (existingUser) {
       throw new ApiError(409, "User with email or username exists already", []);

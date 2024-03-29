@@ -12,17 +12,18 @@
   "dependencies": {
     "@headlessui/react": "^1.7.18",
     "axios": "^1.6.2",
+    "moment": "^2.29.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^4.12.0",
+    "react-player": "^2.15.1",
     "react-router-dom": "^6.20.1",
-    "socket.io-client": "^4.7.2",
-    "moment": "^2.29.4"
+    "socket.io-client": "^4.7.2"
   },
   "devDependencies": {
+    "@types/node": "^20.10.2",
     "@types/react": "^18.2.37",
     "@types/react-dom": "^18.2.15",
-    "@types/node": "^20.10.2",
     "@typescript-eslint/eslint-plugin": "^6.10.0",
     "@typescript-eslint/parser": "^6.10.0",
     "@vitejs/plugin-react": "^4.2.1",

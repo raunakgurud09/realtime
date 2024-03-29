@@ -3,9 +3,11 @@ import { PublicRoute } from "./components/PublicRoute"
 import { Register } from "./pages/Register"
 import { PrivateRoute } from "./components/PrivateRoute"
 import { Login } from "./pages/Login"
-import { Chat } from "./pages/chat"
 import { NotFound } from "./pages/not-found"
 import Home from "./pages/Home"
+import { Chat } from "./pages/chat"
+import LobbyScreen from "./pages/Lobby"
+import RoomPage from "./pages/Room"
 
 function App() {
 
@@ -19,7 +21,18 @@ function App() {
         }
       >
 
+
       </Route>
+
+      <Route
+        path="/lobby"
+        element={<LobbyScreen />}
+      />
+      
+      <Route
+        path="/room/:roomId"
+        element={<RoomPage />}
+      />
 
       {/* private route */}
       <Route
