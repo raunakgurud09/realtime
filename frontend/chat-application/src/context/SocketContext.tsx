@@ -33,7 +33,7 @@ const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
   );
 
   // Initialize io after socket is set
-  const ioInstance = useMemo(() => socket ? socketio("localhost:8080") : null, [socket]);
+  const ioInstance = useMemo(() => socket ? socketio(import.meta.env.VITE_SOCKET_URI) : null, [socket]);
 
   useEffect(() => {
     setSocket(getSocket());
