@@ -26,6 +26,7 @@ import AddChatModal from "../components/chat/AddChatModal";
 import { MyMenu } from "../components/chat/MenuDropDown";
 import { ProfileEditModal } from "../components/chat/ProfileEditModal";
 import { BiSearch } from "react-icons/bi";
+import { AddVideoCall } from "../components/video/AddVideoCall";
 
 const CONNECTED_EVENT = "connected";
 const DISCONNECT_EVENT = "disconnect";
@@ -46,6 +47,7 @@ export const Chat = () => {
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const [openAddChat, setOpenAddChat] = useState(false)
+  const [openVideoCall, setOpenVideoCall] = useState(false)
   const [openProfileEdit, setOpenProfileEdit] = useState(false)
 
   const [isConnected, setIsConnected] = useState(false);
@@ -294,7 +296,7 @@ export const Chat = () => {
       socket.off(UPDATE_GROUP_NAME_EVENT, onGroupNameChange);
     };
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [socket, chats]);
 
 
@@ -309,12 +311,7 @@ export const Chat = () => {
           getChats();
         }}
       />
-      <ProfileEditModal
-        open={openProfileEdit}
-        onClose={() => {
-          setOpenProfileEdit(false)
-        }}
-      />
+
 
       <div className="w-full justify-between items-stretch h-screen flex flex-shrink-0 overflow-y-hidden">
 
@@ -322,6 +319,12 @@ export const Chat = () => {
         <div className="w-3/12 relative ring-white overflow-y-auto">
 
           {/* profile icon */}
+          <ProfileEditModal
+            open={openProfileEdit}
+            onClose={() => {
+              setOpenProfileEdit(false)
+            }}
+          />
           <div className="h-20 border-b border-white/20 my-[9px] px-4 flex justify-between  items-center flex-row">
             <button
               onClick={() => setOpenProfileEdit(true)}
@@ -465,9 +468,17 @@ export const Chat = () => {
                       <div className="text-xs">{isTyping ? <p>Typing...</p> : null}</div>
                     </div>
                   </div>
-                  <div className="px-6 py-2 rounded-full">
+
+                  <AddVideoCall
+                    open={openVideoCall}
+                    onClose={() => {
+                      setOpenVideoCall(false)
+                    }}
+                    rEmail={getChatObjectMetadata(currentChat.current, user!).description || ""}
+                  />
+                  <button onClick={() => setOpenVideoCall(true)} className="px-6 py-2 rounded-full hover:bg-blue-200/10 cursor-pointer">
                     <MdVideoCall size={30} />
-                  </div>
+                  </button>
                 </div>
               </div>
               <div

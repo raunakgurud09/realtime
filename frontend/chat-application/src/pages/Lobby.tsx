@@ -1,10 +1,15 @@
-import  { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSocket } from "../context/SocketContext";
+import { useAuth } from "../context/AuthContext";
 
 const LobbyScreen = () => {
   const [email, setEmail] = useState("");
   const [room, setRoom] = useState("");
+
+  const { user } = useAuth()
+
+
 
   const { io } = useSocket();
   const navigate = useNavigate();
@@ -20,7 +25,6 @@ const LobbyScreen = () => {
   const handleJoinRoom = useCallback(
     (data: { email: string, room: string | number }) => {
       const { email, room } = data;
-      console.log(email)
       navigate(`/room/${room}`);
     },
     [navigate]
@@ -42,7 +46,7 @@ const LobbyScreen = () => {
         <input
           type="email"
           id="email"
-          value={email}
+          value={user ? user.email : email}
           onChange={(e) => setEmail(e.target.value)}
         />
         <br />

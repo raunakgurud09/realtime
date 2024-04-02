@@ -26,9 +26,11 @@ function App() {
 
       <Route
         path="/lobby"
-        element={<LobbyScreen />}
+        element={
+          <LobbyScreen />
+        }
       />
-      
+
       <Route
         path="/room/:roomId"
         element={<RoomPage />}
