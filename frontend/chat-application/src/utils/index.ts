@@ -2,7 +2,6 @@ import { AxiosResponse } from "axios";
 import { APISuccessResponseInterface } from "../interface/api";
 import { ChatListItemInterface } from "../interface/chat";
 import { UserInterface } from "../interface/user";
-import { resolve } from "path";
 
 export const requestHandler = async (
   api: () => Promise<AxiosResponse<APISuccessResponseInterface, any>>,
