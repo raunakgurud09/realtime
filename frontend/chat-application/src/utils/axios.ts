@@ -50,7 +50,7 @@ export const sendMessage = (
   if (content) {
     formData.append("content", content);
   }
-  console.log(attachedFiles)
+  console.log(attachedFiles);
   return apiClient.post(`/chat-app/messages/${chatId}`, formData);
 };
 
@@ -62,7 +62,14 @@ export const createUserChat = (receiverId: string) => {
   return apiClient.post(`/chat-app/chats/c/${receiverId}`);
 };
 
-export const createGroupChat = (data: { name: string; participants: string[] }) => {
+export const createIncomingCall = (chatId: string) => {
+  return apiClient.post(`/chat-app/chats/call/${chatId}`);
+};
+
+export const createGroupChat = (data: {
+  name: string;
+  participants: string[];
+}) => {
   return apiClient.post(`/chat-app/chats/group`, data);
 };
 

@@ -8,6 +8,13 @@ import { Fragment, useCallback, useEffect, useState } from "react";
 import ReactPlayer from "react-player";
 import { useAuth } from "../../context/AuthContext";
 import { SALT } from "../../constants";
+import { nanoid } from 'nanoid'
+import { Navigate, Router, useNavigate } from "react-router-dom";
+import { requestHandler } from "../../utils";
+import { createIncomingCall } from "../../utils/axios";
+import { ChatListItemInterface } from "../../interface/chat";
+import { useSocket } from "../../context/SocketContext";
+
 // import { LiveAudioVisualizer } from 'react-audio-visualize';
 
 
@@ -15,73 +22,124 @@ export const AddVideoCall: React.FC<{
   open: boolean;
   onClose: () => void;
   rEmail: string
-}> = ({ open, onClose, rEmail }) => {
+  currentChat: any
+}> = ({ open, onClose, rEmail, currentChat }) => {
 
   const { user } = useAuth()
+  const { io } = useSocket();
 
-  const [audio, setAudio] = useState(false)
-  const [video, setVideo] = useState(false)
+  const [audio, setAudio] = useState<boolean>(false)
+  const [video, setVideo] = useState<boolean>(false)
 
-  const [myStream, setMyStream] = useState<MediaStream | any | null>(null)
+  const [roomId, setRoomId] = useState<string>('')
+
+  const [myStream, setMyStream] = useState<MediaStream | null>(null)
   const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null);
 
+  const navigate = useNavigate();
+
   const handleClose = async () => {
+    if (myStream) {
+      myStream.getTracks().forEach((track: any) => track.stop());
+    }
     onClose();
   };
 
-
-  const generatedHash = () => {
-    console.log(rEmail, user?.email, SALT)
-    
-  }
-
-  generatedHash()
   useEffect(() => {
     if (!open) return;
   }, [open]);
 
-  // const start = async () => {
-  //   const stream = await navigator.mediaDevices.getUserMedia({
-  //     audio: audio,
-  //     video: video
-  //   });
+  const handleSubmitForm = useCallback(
+    (room: string) => {
+      io.emit("room:join", { email: user?.email, room: room });
+    },
+    [user, roomId, io]
+  );
 
-
-  //   setMyStream(stream)
-  //   setMediaRecorder(myStream)
-  // }
-
-
+  const handleJoinRoom = useCallback(
+    (data: { email: string, room: string | number }) => {
+      console.log(data)
+      const { email, room } = data;
+      navigate(`/room/${room}`);
+    },
+    [navigate]
+  );
 
 
   useEffect(() => {
+    if (io == null) return;
+    io.on("room:join", handleJoinRoom);
+    return () => {
+      io.off("room:join", handleJoinRoom);
+    };
+  }, [io, handleJoinRoom]);
 
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    let stream = null;
+  useEffect(() => {
+    const initStream = async () => {
+      if (open && video) {
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({
+            audio: true,
+            video: true
+          });
+          setMyStream(stream);
+        } catch (error) {
+          console.error("Error accessing user media:", error);
+        }
+      } else {
+        setMyStream(null);
+      }
+    };
 
-    const s = async () => {
-      console.log('stream started', video)
-      stream = await navigator.mediaDevices.getUserMedia({
-        audio: true,
-        video: video
-      })
-      setMyStream(stream)
-      return stream
-    }
-
-    s()
+    initStream();
 
     return () => {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      if (stream) {
-        // stream.onremovetrack = () => {
-        //   console.log('stream removed')
-        // }
+      if (myStream) {
+        myStream.getTracks().forEach((track: any) => track.stop());
       }
+    };
+  }, [open, video]);
+
+
+  const handleToggleVideo = () => {
+    setVideo(prevState => !prevState);
+
+    if (myStream) {
+      myStream.getTracks().forEach((track) => track.stop())
     }
-  }, [video])
+  };
+
+  const handleToggleAudio = () => {
+    setAudio(prev => !prev);
+  }
+
+
+  const createNewCall = async () => {
+
+    await requestHandler(
+      async () => await createIncomingCall(currentChat?.current?._id || ""),
+      null, // Callback to handle loading state
+      async (res) => {
+
+        const { data } = res; // Extract data from response
+        if (res.statusCode === 200) {
+          alert("Chat with selected user already exists");
+          return;
+        }
+        console.log(data, 'call created throw user to new page')
+
+        // setRoomId(data)
+        console.log(data)
+
+        // await sleep(1)
+        handleSubmitForm(data)
+        // handleJoinRoom({ email: user?.email || "", room: data })
+      },
+      alert
+    );
+  };
+
+
 
 
   return (
@@ -142,8 +200,8 @@ export const AddVideoCall: React.FC<{
                         playing
                         muted
                         width=""
-                        height=""
-                        url={myStream}
+                        height="300px"
+                        url={myStream ? myStream : ''}
                         className="aspect-video"
                       />
                     }
@@ -156,18 +214,19 @@ export const AddVideoCall: React.FC<{
                     )} */}
 
                   </div>
-                  <div className="space-x-6">
+                  <div>
                     <button
-                      // onClick={() => { setAudio(!audio); console.log(audio, video) }}
-                      className="h-14 w-14 rounded-full bg-green-600"
+                      onClick={handleToggleAudio}
+                      className={`h-14 w-14 rounded-full bg-green-600 ${audio ? "bg-red-600" : ""}`}
                     >
-                      mic
+                      {audio ? "Mute" : "Unmute"}
                     </button>
                     <button
-                      onClick={() => { setVideo(!video) }}
-                      className="h-14 w-14 rounded-full bg-green-600"
+                      onClick={handleToggleVideo}
+                      className={`h-14 w-14 rounded-full bg-green-600 ${video ? "bg-red-600" : ""
+                        }`}
                     >
-                      vid
+                      {video ? "Stop" : "Start"}
                     </button>
                   </div>
                 </div>
@@ -175,8 +234,7 @@ export const AddVideoCall: React.FC<{
 
                 <div className="px-6 w-full flex justify-center items-center gap-4">
                   <button
-                    // disabled={creatingChat}
-                    // onClick={isGroupChat ? createNewGroupChat : createNewChat}
+                    onClick={createNewCall}
                     className="w-1/2 bg-violet-600/80 text-white rounded-md px-4 py-2 font-medium border-2  border-violet-900"
                   >
                     Call

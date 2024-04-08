@@ -252,3 +252,38 @@ export const createAGroupChat = asyncHandler(async (req, res) => {
     .status(201)
     .json(new ApiResponse(201, payload, "Group chat created successfully"));
 });
+
+export const createIncomingCall = asyncHandler(async (req, res) => {
+  const { chatId } = req.params;
+
+  const selectedChat = await Chat.findById(chatId);
+
+  if (!selectedChat) {
+    throw new ApiError(404, "Chat does not exist");
+  }
+
+  const chat = await Chat.findById(chatId);
+
+  //  database stuff
+
+  // generate a random id
+  const roomId: string = "fdsoibwdcwhnoegwiv";
+
+  chat.participants.forEach((participantObjectId) => {
+    // here the chat is the raw instance of the chat in which participants is the array of object ids of users
+    // avoid emitting event to the user who is sending the message
+    if (participantObjectId.toString() === req.user._id.toString()) return;
+
+    // emit the receive message event to the other participants with received message as the payload
+    emitSocketEvent(
+      req,
+      participantObjectId.toString(),
+      ChatEventEnum.PARTICIPANT_CALL_EVENT,
+      { chatId: "abc", roomId }
+    );
+  });
+
+  return res
+    .status(201)
+    .json(new ApiResponse(201, roomId, "Message saved successfully"));
+});

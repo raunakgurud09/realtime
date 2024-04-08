@@ -39,6 +39,13 @@ const mountParticipantStoppedTypingEvent = (socket) => {
   });
 };
 
+const participantCallEvent = (socket) => {
+  socket.on(ChatEventEnum.PARTICIPANT_CALL_EVENT, ({ chatId, roomId }) => {
+    console.log(roomId);
+    socket.in(chatId).emit(ChatEventEnum.PARTICIPANT_CALL_EVENT, roomId);
+  });
+};
+
 /**
  *
  * @param {Server<import("socket.io/dist/typed-events").DefaultEventsMap, import("socket.io/dist/typed-events").DefaultEventsMap, import("socket.io/dist/typed-events").DefaultEventsMap, any>} io
@@ -87,6 +94,7 @@ const initializeSocketIO = (io) => {
       mountJoinChatEvent(socket);
       mountParticipantTypingEvent(socket);
       mountParticipantStoppedTypingEvent(socket);
+      participantCallEvent(socket);
 
       socket.on(ChatEventEnum.DISCONNECT_EVENT, () => {
         console.log("user has disconnected 🚫. userId: " + socket.user?._id);
@@ -109,8 +117,10 @@ const socketIdToEmailMap = new Map();
 const initializeWebRTC = (io) => {
   return io.on("connection", async (socket) => {
     console.log(`Socket Connected`, socket.id);
+
     socket.on("room:join", (data) => {
       const { email, room } = data;
+      console.log("room", room);
       emailToSocketIdMap.set(email, socket.id);
       socketIdToEmailMap.set(socket.id, email);
       io.to(room).emit("user:joined", { email, id: socket.id });

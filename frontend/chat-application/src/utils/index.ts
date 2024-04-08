@@ -2,6 +2,7 @@ import { AxiosResponse } from "axios";
 import { APISuccessResponseInterface } from "../interface/api";
 import { ChatListItemInterface } from "../interface/chat";
 import { UserInterface } from "../interface/user";
+import { resolve } from "path";
 
 export const requestHandler = async (
   api: () => Promise<AxiosResponse<APISuccessResponseInterface, any>>,
@@ -48,10 +49,10 @@ export const getChatObjectMetadata = (
   const lastMessage = chat.lastMessage?.content
     ? chat.lastMessage?.content
     : chat.lastMessage
-    ? `${chat.lastMessage?.attachments?.length} attachment${
-        chat.lastMessage.attachments.length > 1 ? "s" : ""
-      }`
-    : "No messages yet"; // Placeholder text if there are no messages.
+      ? `${chat.lastMessage?.attachments?.length} attachment${
+          chat.lastMessage.attachments.length > 1 ? "s" : ""
+        }`
+      : "No messages yet"; // Placeholder text if there are no messages.
 
   if (chat.isGroupChat) {
     // Case: Group chat

@@ -1,5 +1,5 @@
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { getChatMessages, getUserChats, sendMessage } from "../utils/axios";
 
 import { LuMessageSquarePlus } from "react-icons/lu";
@@ -27,6 +27,7 @@ import { MyMenu } from "../components/chat/MenuDropDown";
 import { ProfileEditModal } from "../components/chat/ProfileEditModal";
 import { BiSearch } from "react-icons/bi";
 import { AddVideoCall } from "../components/video/AddVideoCall";
+import { useNavigate } from "react-router-dom";
 
 const CONNECTED_EVENT = "connected";
 const DISCONNECT_EVENT = "disconnect";
@@ -37,10 +38,11 @@ const STOP_TYPING_EVENT = "stopTyping";
 const MESSAGE_RECEIVED_EVENT = "messageReceived";
 const LEAVE_CHAT_EVENT = "leaveChat";
 const UPDATE_GROUP_NAME_EVENT = "updateGroupName";
+const INCOMING_CALL_EVENT = 'incomingCallEvent'
 
 export const Chat = () => {
   const { user } = useAuth();
-  const { socket } = useSocket();
+  const { socket, io } = useSocket();
 
   const currentChat = useRef<ChatListItemInterface | null>(null);
 
@@ -68,6 +70,9 @@ export const Chat = () => {
   const [localSearchQuery, setLocalSearchQuery] = useState("");
 
   const [attachedFiles, setAttachedFiles] = useState<File[]>([]);
+
+  const [incomingCall, setIncomingCall] = useState(false)
+  const [callRoomId, setCallRoomId] = useState<string>('')
 
   /**
    *  A  function to update the last message of a specified chat to update the chat list
@@ -217,6 +222,20 @@ export const Chat = () => {
     setChats((prev) => [chat, ...prev]);
   };
 
+  const navigate = useNavigate();
+
+  const handelCallToUser = (roomId: string) => {
+    navigate(`/room/${roomId}`);
+    return
+  }
+
+  const onIncomingCall = useCallback(async (data: { chatId: string, roomId: string }) => {
+    setIncomingCall(true)
+    console.log(data.roomId)
+    setCallRoomId(data.roomId)
+  }, []);
+
+
   // This function handles the event when a user leaves a chat.
   const onChatLeave = (chat: ChatListItemInterface) => {
     // Check if the chat the user is leaving is the current active chat.
@@ -229,6 +248,37 @@ export const Chat = () => {
     // Update the chats by removing the chat that the user left.
     setChats((prev) => prev.filter((c) => c._id !== chat._id));
   };
+
+  const handleAcceptCall = () => {
+    console.log('accept click')
+    handleSubmitForm(callRoomId)
+  }
+
+
+
+  const handleSubmitForm = useCallback(
+    (room: string) => {
+      io.emit("room:join", { email: user?.email, room });
+    },
+    [user, callRoomId, io]
+  );
+
+  const handleJoinRoom = useCallback(
+    (data: { email: string, room: string | number }) => {
+      const { email, room } = data;
+      navigate(`/room/${room}`);
+    },
+    [navigate]
+  );
+
+  useEffect(() => {
+    if (io == null) return;
+    io.on("room:join", handleJoinRoom);
+    return () => {
+      io.off("room:join", handleJoinRoom);
+    };
+  }, [io, handleJoinRoom]);
+
 
   // Function to handle changes in group name
   const onGroupNameChange = (chat: ChatListItemInterface) => {
@@ -283,6 +333,7 @@ export const Chat = () => {
     socket.on(NEW_CHAT_EVENT, onNewChat);
     socket.on(LEAVE_CHAT_EVENT, onChatLeave);
     socket.on(UPDATE_GROUP_NAME_EVENT, onGroupNameChange);
+    socket.on(INCOMING_CALL_EVENT, onIncomingCall);
 
     return () => {
       // Remove all the event listeners we set up to avoid memory leaks and unintended behaviors.
@@ -294,6 +345,7 @@ export const Chat = () => {
       socket.off(NEW_CHAT_EVENT, onNewChat);
       socket.off(LEAVE_CHAT_EVENT, onChatLeave);
       socket.off(UPDATE_GROUP_NAME_EVENT, onGroupNameChange);
+      socket.off(INCOMING_CALL_EVENT, onIncomingCall);
     };
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -474,6 +526,7 @@ export const Chat = () => {
                     onClose={() => {
                       setOpenVideoCall(false)
                     }}
+                    currentChat={currentChat}
                     rEmail={getChatObjectMetadata(currentChat.current, user!).description || ""}
                   />
                   <button onClick={() => setOpenVideoCall(true)} className="px-6 py-2 rounded-full hover:bg-blue-200/10 cursor-pointer">
@@ -510,6 +563,22 @@ export const Chat = () => {
                   </>
                 )}
               </div>
+              {
+                incomingCall && (
+                  <div className="absolute right-0 top-[90px] h-24  w-72 bg-black border rounded-md m-3">
+
+                    <div className="w-full h-max p-3">
+                      <p className="font-bold text-center">Incoming Call</p>
+                    </div>
+                    <div className="w-full flex items-start justify-evenly">
+                      <button className="w-1/3 border m-1 rounded-md px-4 py-1">Decline</button>
+                      <button
+                        onClick={handleAcceptCall}
+                        className="w-1/3 border m-1 rounded-md px-4 py-1">Accept</button>
+                    </div>
+                  </div>
+                )
+              }
               {attachedFiles.length > 0 ? (
                 <div className="grid gap-4 grid-cols-5 p-4 justify-start w-full min-w-fit  bg-black/30">
                   {attachedFiles.map((file, i) => {

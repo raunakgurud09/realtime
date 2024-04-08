@@ -5,6 +5,7 @@ import { mongoIdPathVariableValidator } from "../../validations/mongodb.validato
 import {
   availableUsers,
   createAGroupChat,
+  createIncomingCall,
   createOrGetAOneOnOneChat,
   getAllChats,
 } from "../../controllers/chat/chat.controllers";
@@ -24,6 +25,8 @@ router
     validateError,
     createOrGetAOneOnOneChat
   );
+
+router.route("/call/:chatId").post(createIncomingCall);
 
 router.route("/group").post(createAGroupChat);
 
