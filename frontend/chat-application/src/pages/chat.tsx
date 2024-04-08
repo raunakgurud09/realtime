@@ -224,10 +224,10 @@ export const Chat = () => {
 
   const navigate = useNavigate();
 
-  const handelCallToUser = (roomId: string) => {
-    navigate(`/room/${roomId}`);
-    return
-  }
+  // const handelCallToUser = (roomId: string) => {
+  //   navigate(`/room/${roomId}`);
+  //   return
+  // }
 
   const onIncomingCall = useCallback(async (data: { chatId: string, roomId: string }) => {
     setIncomingCall(true)
@@ -260,12 +260,13 @@ export const Chat = () => {
     (room: string) => {
       io.emit("room:join", { email: user?.email, room });
     },
-    [user, callRoomId, io]
+    [user, io]
   );
 
   const handleJoinRoom = useCallback(
     (data: { email: string, room: string | number }) => {
       const { email, room } = data;
+      console.log(email)
       navigate(`/room/${room}`);
     },
     [navigate]
@@ -320,6 +321,7 @@ export const Chat = () => {
       getMessages();
     }
     // An empty dependency array ensures this useEffect runs only once, similar to componentDidMount.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {

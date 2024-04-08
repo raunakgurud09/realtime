@@ -1,18 +1,18 @@
 import { Dialog, Transition } from "@headlessui/react";
 
-import { MdGroups } from "react-icons/md";
-import { CiCircleRemove } from "react-icons/ci";
+// import { MdGroups } from "react-icons/md";
+// import { CiCircleRemove } from "react-icons/ci";
 
 
 import { Fragment, useCallback, useEffect, useState } from "react";
 import ReactPlayer from "react-player";
 import { useAuth } from "../../context/AuthContext";
-import { SALT } from "../../constants";
-import { nanoid } from 'nanoid'
-import { Navigate, Router, useNavigate } from "react-router-dom";
+// import { SALT } from "../../constants";
+// import { nanoid } from 'nanoid'
+import { useNavigate } from "react-router-dom";
 import { requestHandler } from "../../utils";
 import { createIncomingCall } from "../../utils/axios";
-import { ChatListItemInterface } from "../../interface/chat";
+// import { ChatListItemInterface } from "../../interface/chat";
 import { useSocket } from "../../context/SocketContext";
 
 // import { LiveAudioVisualizer } from 'react-audio-visualize';
@@ -23,7 +23,7 @@ export const AddVideoCall: React.FC<{
   onClose: () => void;
   rEmail: string
   currentChat: any
-}> = ({ open, onClose, rEmail, currentChat }) => {
+}> = ({ open, onClose, currentChat }) => {
 
   const { user } = useAuth()
   const { io } = useSocket();
@@ -31,10 +31,10 @@ export const AddVideoCall: React.FC<{
   const [audio, setAudio] = useState<boolean>(false)
   const [video, setVideo] = useState<boolean>(false)
 
-  const [roomId, setRoomId] = useState<string>('')
+  // const [roomId, setRoomId] = useState<string>('')
 
   const [myStream, setMyStream] = useState<MediaStream | null>(null)
-  const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null);
+  // const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null);
 
   const navigate = useNavigate();
 
@@ -53,13 +53,14 @@ export const AddVideoCall: React.FC<{
     (room: string) => {
       io.emit("room:join", { email: user?.email, room: room });
     },
-    [user, roomId, io]
+    [user, io]
   );
 
   const handleJoinRoom = useCallback(
     (data: { email: string, room: string | number }) => {
       console.log(data)
       const { email, room } = data;
+      console.log(email)
       navigate(`/room/${room}`);
     },
     [navigate]
@@ -98,7 +99,7 @@ export const AddVideoCall: React.FC<{
         myStream.getTracks().forEach((track: any) => track.stop());
       }
     };
-  }, [open, video]);
+  }, [myStream, open, video]);
 
 
   const handleToggleVideo = () => {
