@@ -14,6 +14,7 @@ import { requestHandler } from "../../utils";
 import { createIncomingCall } from "../../utils/axios";
 // import { ChatListItemInterface } from "../../interface/chat";
 import { useSocket } from "../../context/SocketContext";
+import AudioAnalyzer from "../Audio/AudioAnalyzer";
 
 // import { LiveAudioVisualizer } from 'react-audio-visualize';
 
@@ -99,7 +100,8 @@ export const AddVideoCall: React.FC<{
         myStream.getTracks().forEach((track: any) => track.stop());
       }
     };
-  }, [myStream, open, video]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open, video]);
 
 
   const handleToggleVideo = () => {
@@ -206,16 +208,10 @@ export const AddVideoCall: React.FC<{
                         className="aspect-video"
                       />
                     }
-                    {/* {mediaRecorder && (
-                      <LiveAudioVisualizer
-                        mediaRecorder={mediaRecorder}
-                        width={200}
-                        height={75}
-                      />
-                    )} */}
+
 
                   </div>
-                  <div>
+                  <div className="flex">
                     <button
                       onClick={handleToggleAudio}
                       className={`h-14 w-14 rounded-full bg-green-600 ${audio ? "bg-red-600" : ""}`}
@@ -229,6 +225,7 @@ export const AddVideoCall: React.FC<{
                     >
                       {video ? "Stop" : "Start"}
                     </button>
+                    {myStream && <AudioAnalyzer audio={myStream} />}
                   </div>
                 </div>
 
