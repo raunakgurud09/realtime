@@ -11,13 +11,12 @@ import { VideoPlayer } from "../components/video/VideoPlayer";
 
 const RoomPage = () => {
   const { io } = useSocket();
+  const { user } = useAuth();
 
   const [myMic, setMyMic] = useState(true)
   const [myVid, setMyVid] = useState(true)
 
   const [videoPlayerBig, setVideoPlayerBig] = useState(false)
-
-  const { user } = useAuth();
 
   const [myStream, setMyStream] = useState<MediaStream | null>(null);
 
@@ -105,7 +104,9 @@ const RoomPage = () => {
 
       console.log(`Incoming Call`, from,);
       const ans = await peer.getAnswer(offer);
+
       io.emit("call:accepted", { to: from, ans });
+
     },
     [io]
   );
@@ -122,7 +123,9 @@ const RoomPage = () => {
 
       console.log(from)
       peer.setLocalDescription(ans);
+
       console.log("Call Accepted!");
+
       sendStreams();
     },
     [sendStreams]
@@ -194,7 +197,6 @@ const RoomPage = () => {
   useEffect(() => {
     peer.peer?.addEventListener("track", async (ev) => {
       const remoteStream = ev.streams;
-      console.log("GOT TRACKS!!");
       setRemoteStream(remoteStream[0]);
     });
   }, []);
@@ -248,6 +250,7 @@ const RoomPage = () => {
             email={remoteSocketEmail}
             stream={remoteStream}
             xl={!videoPlayerBig}
+            remote
           />
 
         </div>

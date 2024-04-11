@@ -20,7 +20,7 @@ export const VideoPlayerBig = ({ stream, email }: { stream: MediaStream | null, 
     </div>
   )
 }
-export const VideoPlayer = ({ stream, email, xl = false }: { stream: MediaStream | null, email?: string, xl?: boolean }) => {
+export const VideoPlayer = ({ stream, email, xl = false, remote = false }: { stream: MediaStream | null, email?: string, xl?: boolean, remote?: boolean }) => {
   return (
     <div className={cx("absolute bottom-20 p-4", xl ? 'left-0' : 'right-0')}>
       {stream && (
@@ -29,7 +29,7 @@ export const VideoPlayer = ({ stream, email, xl = false }: { stream: MediaStream
           <div className={cx("absolute top-1 right-1 bg-blue-600 rounded-full  p-2 text-white m-1", xl ? '' : '')}><AudioAnalyzer audio={stream} /></div>
           <ReactPlayer
             playing
-            muted
+            muted={!remote}
             height={xl ? "560px" : "240px"}
             width={xl ? "1000px" : "440px"}
             url={stream}
