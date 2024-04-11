@@ -1,12 +1,13 @@
 
 import { useEffect, useCallback, useState } from "react";
-import ReactPlayer from "react-player";
+// import ReactPlayer from "react-player";
 import peer from "../service/peer";
 import { useSocket } from "../context/SocketContext";
 import { BiDotsVertical, BiMicrophone, BiMicrophoneOff, BiPhoneOff, BiVideo, BiVideoOff } from "react-icons/bi";
 import { Time } from "../components/Room/Time";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { VideoPlayer } from "../components/video/VideoPlayer";
 
 const RoomPage = () => {
   const { io } = useSocket();
@@ -14,12 +15,15 @@ const RoomPage = () => {
   const [myMic, setMyMic] = useState(true)
   const [myVid, setMyVid] = useState(true)
 
+  const [videoPlayerBig, setVideoPlayerBig] = useState(false)
+
   const { user } = useAuth();
 
   const [myStream, setMyStream] = useState<MediaStream | null>(null);
 
   // const [endPopup, setEndPopup] = useState<boolean>(false)
 
+  const [isCallReceiver, setIsCallReceiver] = useState(false)
 
   const [remoteSocketId, setRemoteSocketId] = useState<string>('');
   const [remoteSocketEmail, setRemoteSocketEmail] = useState<string>('')
@@ -31,7 +35,6 @@ const RoomPage = () => {
   const handleUserJoined = useCallback(async ({ email, id }: { email: string, id: string | any, user: any }) => {
 
     console.log(`Email ${email} joined room`);
-    console.log(email)
 
     setRemoteSocketId(id);
     setRemoteSocketEmail(email)
@@ -39,29 +42,67 @@ const RoomPage = () => {
   }, []);
 
   const handleCallUser = useCallback(async () => {
+
     const stream = await navigator.mediaDevices.getUserMedia({
       audio: true,
-      video: true,
+      video: {
+        width: { min: 1024, ideal: 1280, max: 1920 },
+        height: { min: 576, ideal: 720, max: 1080 },
+      },
     });
-    const offer = await peer.getOffer();
+    setMyStream(stream);
 
+    const offer = await peer.getOffer();
     io.emit("user:call", { to: remoteSocketId, email: user?.email, offer });
 
-    setMyStream(stream);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [remoteSocketId, io]);
+
+
+  // useEffect(() => {
+  //   const initStream = async () => {
+  //     if (myVid) {
+  //       try {
+  //         const stream = await navigator.mediaDevices.getUserMedia({
+  //           audio: true,
+  //           video: true
+  //         });
+  //         setMyStream(stream);
+  //       } catch (error) {
+  //         console.error("Error accessing user media:", error);
+  //       }
+  //     } else {
+  //       setMyStream(null);
+  //     }
+  //   };
+
+  //   initStream();
+
+  //   return () => {
+  //     if (myStream) {
+  //       myStream.getTracks().forEach((track: any) => track.stop());
+  //     }
+  //   };
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, []);
+
 
   const handleIncomingCall = useCallback(
     async ({ from, offer, email }: { from: string, email: string, offer: RTCSessionDescription }) => {
 
       setRemoteSocketId(from);
       setRemoteSocketEmail(email)
+      setIsCallReceiver(true)
 
       const stream = await navigator.mediaDevices.getUserMedia({
         audio: true,
-        video: true,
+        video: {
+          width: { min: 1024, ideal: 1280, max: 1920 },
+          height: { min: 576, ideal: 720, max: 1080 },
+        },
       });
       setMyStream(stream);
+
       console.log(`Incoming Call`, from,);
       const ans = await peer.getAnswer(offer);
       io.emit("call:accepted", { to: from, ans });
@@ -137,12 +178,18 @@ const RoomPage = () => {
     navigate(`/chat`);
   }
 
-  // useEffect(() => {
-  // handleCallUser()
-  //   return () => {
-  //     handleCallLeave
-  //   }
-  // }, [remoteSocketId])
+  const handleSwitchVideoPlayer = () => {
+    setVideoPlayerBig(prev => !prev)
+  }
+
+  useEffect(() => {
+    // handleCallUser()
+    console.log('mount')
+    return () => {
+      console.log('un-mount')
+      // handleCallLeave()
+    }
+  }, [])
 
   useEffect(() => {
     peer.peer?.addEventListener("track", async (ev) => {
@@ -182,50 +229,37 @@ const RoomPage = () => {
   return (
     <div>
 
-      <div>
-        {/* <AudioAnalyzer audio={myStream} /> */}
+      <div className="relative ">
+
+        <div className="space-x-4 h-10 bg-green-500 w-full absolute top-0 z-10 ">
+          <h4>{remoteSocketId ? "Connected" : "Waiting to join..."}</h4>
+          {myStream && isCallReceiver && <button className="px-6 py-1 border border-white rounded-md" onClick={sendStreams}>Accept</button>}
+          {remoteSocketId && !isCallReceiver && <button className="px-6 py-1 border border-white rounded-md" onClick={handleCallUser}>CALL</button>}
+        </div>
+
+        <div className="bg-black relative h-screen pt-16">
+
+          <VideoPlayer
+            email={user ? user?.email : ''}
+            stream={myStream}
+            xl={videoPlayerBig}
+          />
+          <VideoPlayer
+            email={remoteSocketEmail}
+            stream={remoteStream}
+            xl={!videoPlayerBig}
+          />
+
+        </div>
+
       </div>
 
-      <div className="w-full ">
-
-        <h4>{remoteSocketId ? "Connected" : "Calling..."}</h4>
-        {myStream && <button onClick={sendStreams}>Send Stream</button>}
-        {remoteSocketId && <button onClick={handleCallUser}>CALL</button>}
-        {myStream && (
-          <>
-            <h1>My Stream</h1>
-            <ReactPlayer
-              playing
-              muted
-              height="300px"
-              width="500px"
-              url={myStream}
-              className=""
-            />
-          </>
-        )}
-        {remoteStream && (
-          <>
-            <h1>Remote Stream</h1>
-            <p>{remoteSocketEmail}</p>
-            <ReactPlayer
-              playing
-              muted
-              height="100px"
-              width="200px"
-              url={remoteStream}
-            />
-          </>
-        )}
-      </div>
-
-      <div className="w-full h-20 absolute p-4 bottom-0 flex items-center justify-between">
-
+      <div className="absolute w-full h-20  p-4 bottom-0 flex items-center justify-between">
         <div className="flex items-center space-x-4">
           <Time />
         </div>
 
-        <div className="w-[300px] h-14 bg-black rounded-full flex items-center justify-between p-2">
+        <div className="w-[300px] h-14 bg-white/10 rounded-full flex items-center justify-between p-2">
           <button
             onClick={handleCallLeave}
             className="bg-red-600 px-4 py-2 rounded-full">
@@ -273,9 +307,10 @@ const RoomPage = () => {
         </div>
 
         <div>
-          options
+          <button onClick={handleSwitchVideoPlayer}>options</button>
         </div>
       </div>
+
     </div>
   );
 };

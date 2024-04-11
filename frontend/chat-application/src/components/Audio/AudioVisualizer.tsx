@@ -42,7 +42,7 @@ class AudioVisualizer extends Component<Props> {
   }
 
   render() {
-    return <canvas width={50} height={50} ref={this.canvas} className='bg-blue-600 rounded-full'/>;
+    return <canvas width={30} height={30} ref={this.canvas} className='bg-blue-600 rounded-full'/>;
   }
 }
 

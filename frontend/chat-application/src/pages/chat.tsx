@@ -249,8 +249,8 @@ export const Chat = () => {
     setChats((prev) => prev.filter((c) => c._id !== chat._id));
   };
 
-  const handleAcceptCall = () => {
-    console.log('accept click')
+  const handleViewCall = () => {
+    console.log('View click')
     handleSubmitForm(callRoomId)
   }
 
@@ -575,8 +575,8 @@ export const Chat = () => {
                     <div className="w-full flex items-start justify-evenly">
                       <button className="w-1/3 border m-1 rounded-md px-4 py-1">Decline</button>
                       <button
-                        onClick={handleAcceptCall}
-                        className="w-1/3 border m-1 rounded-md px-4 py-1">Accept</button>
+                        onClick={handleViewCall}
+                        className="w-1/3 border m-1 rounded-md px-4 py-1">View</button>
                     </div>
                   </div>
                 )

@@ -232,7 +232,7 @@ export const AddVideoCall: React.FC<{
                     onClick={createNewCall}
                     className="w-1/2 bg-violet-600/80 text-white rounded-md px-4 py-2 font-medium border-2  border-violet-900"
                   >
-                    Call
+                    Create call
                   </button>
                 </div>
               </Dialog.Panel>

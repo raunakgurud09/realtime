@@ -18,14 +18,13 @@ class AudioAnalyzer extends Component<Props, State> {
 
     constructor(props: Props) {
         super(props);
-        this.state = { 
+        this.state = {
             audioData: new Uint8Array(0)
         };
         this.tick = this.tick.bind(this);
-        // eslint-disable-next-line no-unsafe-optional-chaining, @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        // eslint-disable-next-line no-unsafe-optional-chaining
-        this.audioContext = new (window.AudioContext || window?.webkitAudioContext)();
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        //@ts-ignore
+        this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
         this.analyser = this.audioContext.createAnalyser();
         this.dataArray = new Uint8Array(this.analyser.frequencyBinCount);
         this.source = null;
