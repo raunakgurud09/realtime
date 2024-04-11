@@ -42,14 +42,7 @@ const RoomPage = () => {
 
   const handleCallUser = useCallback(async () => {
 
-    const stream = await navigator.mediaDevices.getUserMedia({
-      audio: true,
-      video: {
-        width: { min: 1024, ideal: 1280, max: 1920 },
-        height: { min: 576, ideal: 720, max: 1080 },
-      },
-    });
-    setMyStream(stream);
+    setMyStream(myStream);
 
     const offer = await peer.getOffer();
     io.emit("user:call", { to: remoteSocketId, email: user?.email, offer });
@@ -57,33 +50,6 @@ const RoomPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [remoteSocketId, io]);
 
-
-  // useEffect(() => {
-  //   const initStream = async () => {
-  //     if (myVid) {
-  //       try {
-  //         const stream = await navigator.mediaDevices.getUserMedia({
-  //           audio: true,
-  //           video: true
-  //         });
-  //         setMyStream(stream);
-  //       } catch (error) {
-  //         console.error("Error accessing user media:", error);
-  //       }
-  //     } else {
-  //       setMyStream(null);
-  //     }
-  //   };
-
-  //   initStream();
-
-  //   return () => {
-  //     if (myStream) {
-  //       myStream.getTracks().forEach((track: any) => track.stop());
-  //     }
-  //   };
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, []);
 
 
   const handleIncomingCall = useCallback(
@@ -93,14 +59,7 @@ const RoomPage = () => {
       setRemoteSocketEmail(email)
       setIsCallReceiver(true)
 
-      const stream = await navigator.mediaDevices.getUserMedia({
-        audio: true,
-        video: {
-          width: { min: 1024, ideal: 1280, max: 1920 },
-          height: { min: 576, ideal: 720, max: 1080 },
-        },
-      });
-      setMyStream(stream);
+
 
       console.log(`Incoming Call`, from,);
       const ans = await peer.getAnswer(offer);
@@ -114,6 +73,7 @@ const RoomPage = () => {
   const sendStreams = useCallback(() => {
     if (!myStream) return;
     for (const track of myStream.getTracks()) {
+      console.log(track)
       peer.peer?.addTrack(track, myStream);
     }
   }, [myStream]);
@@ -157,10 +117,16 @@ const RoomPage = () => {
 
   const handleToggleVideoSwitch = () => {
     setMyVid(prev => !prev)
+
+    
   }
 
   const handleToggleAudioSwitch = () => {
     setMyMic(prev => !prev)
+  }
+
+  const handleSwitchVideoPlayer = () => {
+    setVideoPlayerBig(prev => !prev)
   }
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -181,22 +147,54 @@ const RoomPage = () => {
     navigate(`/chat`);
   }
 
-  const handleSwitchVideoPlayer = () => {
-    setVideoPlayerBig(prev => !prev)
-  }
+
+
+  // useEffect(() => {
+  // handleCallUser()
+  //   console.log('mount')
+  //   return () => {
+  //     console.log('un-mount')
+  // handleCallLeave()
+  //   }
+  // }, [])
 
   useEffect(() => {
-    // handleCallUser()
-    console.log('mount')
+    const initStream = async () => {
+
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          audio: true,
+          video: {
+            width: { min: 1024, ideal: 1280, max: 1920 },
+            height: { min: 576, ideal: 720, max: 1080 },
+          },
+        });
+        setMyStream(stream);
+      } catch (error) {
+        console.error("Error accessing user media:", error);
+      }
+    };
+
+    initStream();
+
     return () => {
+
+      if (myStream) {
+        myStream.getTracks().forEach((track: any) => track.stop());
+      }
+      if (remoteStream) {
+        remoteStream.getTracks().forEach((track: any) => track.stop());
+      }
       console.log('un-mount')
-      // handleCallLeave()
-    }
-  }, [])
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
 
   useEffect(() => {
     peer.peer?.addEventListener("track", async (ev) => {
       const remoteStream = ev.streams;
+      
       setRemoteStream(remoteStream[0]);
     });
   }, []);
@@ -233,8 +231,8 @@ const RoomPage = () => {
 
       <div className="relative ">
 
-        <div className="space-x-4 h-10 bg-green-500 w-full absolute top-0 z-10 ">
-          <h4>{remoteSocketId ? "Connected" : "Waiting to join..."}</h4>
+        <div className="space-x-4 h-12 bg-green-500 w-full absolute top-0 z-10 flex items-center justify-center py-2">
+          <h4 className="font-semibold text-xl">{remoteSocketId ? "Connected" : "Waiting to join..."}</h4>
           {myStream && isCallReceiver && <button className="px-6 py-1 border border-white rounded-md" onClick={sendStreams}>Accept</button>}
           {remoteSocketId && !isCallReceiver && <button className="px-6 py-1 border border-white rounded-md" onClick={handleCallUser}>CALL</button>}
         </div>
