@@ -17,7 +17,8 @@ const RoomPage = () => {
   const { user } = useAuth();
 
   const [myStream, setMyStream] = useState<MediaStream | null>(null);
-  const [endPopup, setEndPopup] = useState<boolean>(false)
+
+  // const [endPopup, setEndPopup] = useState<boolean>(false)
 
 
   const [remoteSocketId, setRemoteSocketId] = useState<string>('');
@@ -27,7 +28,7 @@ const RoomPage = () => {
   const navigate = useNavigate();
 
 
-  const handleUserJoined = useCallback(async ({ email, id, user }: { email: string, id: string | any, user: any }) => {
+  const handleUserJoined = useCallback(async ({ email, id }: { email: string, id: string | any, user: any }) => {
 
     console.log(`Email ${email} joined room`);
     console.log(email)
@@ -47,6 +48,7 @@ const RoomPage = () => {
     io.emit("user:call", { to: remoteSocketId, email: user?.email, offer });
 
     setMyStream(stream);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [remoteSocketId, io]);
 
   const handleIncomingCall = useCallback(
