@@ -52,16 +52,15 @@ export const AddVideoCall: React.FC<{
 
   const handleSubmitForm = useCallback(
     (room: string) => {
-      io.emit("room:join", { email: user?.email, room: room });
+      io.emit("room:join", { email: user?.email, room: room, user: user });
     },
     [user, io]
   );
 
   const handleJoinRoom = useCallback(
     (data: { email: string, room: string | number }) => {
-      console.log(data)
-      const { email, room } = data;
-      console.log(email)
+      const { room } = data;
+
       navigate(`/room/${room}`);
     },
     [navigate]
@@ -129,10 +128,8 @@ export const AddVideoCall: React.FC<{
           alert("Chat with selected user already exists");
           return;
         }
-        console.log(data, 'call created throw user to new page')
 
         // setRoomId(data)
-        console.log(data)
 
         // await sleep(1)
         handleSubmitForm(data)

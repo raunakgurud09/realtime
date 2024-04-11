@@ -1,7 +1,8 @@
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-nocheck
 class PeerService {
+  peer: RTCPeerConnection | null;
+
   constructor() {
+    this.peer = null;
     if (!this.peer) {
       this.peer = new RTCPeerConnection({
         iceServers: [
@@ -16,7 +17,7 @@ class PeerService {
     }
   }
 
-  async getAnswer(offer) {
+  async getAnswer(offer: RTCSessionDescription) {
     if (this.peer) {
       await this.peer.setRemoteDescription(offer);
       const ans = await this.peer.createAnswer();
@@ -25,7 +26,7 @@ class PeerService {
     }
   }
 
-  async setLocalDescription(ans) {
+  async setLocalDescription(ans: RTCSessionDescription) {
     if (this.peer) {
       await this.peer.setRemoteDescription(new RTCSessionDescription(ans));
     }

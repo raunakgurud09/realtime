@@ -265,8 +265,8 @@ export const Chat = () => {
 
   const handleJoinRoom = useCallback(
     (data: { email: string, room: string | number }) => {
-      const { email, room } = data;
-      console.log(email)
+      const {  room } = data;
+
       navigate(`/room/${room}`);
     },
     [navigate]

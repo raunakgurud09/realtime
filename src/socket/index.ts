@@ -119,17 +119,25 @@ const initializeWebRTC = (io) => {
     console.log(`Socket Connected`, socket.id);
 
     socket.on("room:join", (data) => {
-      const { email, room } = data;
-      console.log("room", room);
+      const { email, room, user } = data;
+
+      console.log("room", room, user);
+
       emailToSocketIdMap.set(email, socket.id);
       socketIdToEmailMap.set(socket.id, email);
-      io.to(room).emit("user:joined", { email, id: socket.id });
+
       socket.join(room);
+      io.to(room).emit("user:joined", { email, id: socket.id, user });
+
       io.to(socket.id).emit("room:join", data);
     });
 
-    socket.on("user:call", ({ to, offer }) => {
-      io.to(to).emit("incomming:call", { from: socket.id, offer });
+    socket.on("call:ended", (data) => {
+      io.to(data.to).emit("call:ended", { end: "abc" });
+    });
+
+    socket.on("user:call", ({ to, offer, email }) => {
+      io.to(to).emit("incoming:call", { from: socket.id, email, offer });
     });
 
     socket.on("call:accepted", ({ to, ans }) => {
