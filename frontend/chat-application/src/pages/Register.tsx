@@ -32,7 +32,7 @@ export const Register = () => {
   return (
     <div className="pointer-events-none relative flex h-screen flex-col items-center justify-center gap-8 overflow-hidden [&>*]:pointer-events-auto">
 
-      <div className="absolute left-0 z-30 h-screen max-w-2xl w-full p-8 px-28 flex justify-center items-start gap-5 flex-col bg-dark shadow-md bg-black">
+      <div className="absolute left-0 z-30 h-screen border-r-[1px] border-r-gray-600 max-w-2xl w-full p-8 px-28 flex justify-center items-start gap-5 flex-col bg-dark shadow-md bg-black">
         <div className='flex flex-col item-start space-x-1 space-y-1'>
           <h1 className="text-4xl flex-col font-bold text-violet-600">
             Get started
@@ -91,22 +91,12 @@ export const Register = () => {
         {/* Link to the registration page */}
         <div className='w-full flex flex-col space-y-1 justify-center items-center'>
           <small className="text-zinc-300">
-            Already have an account{" "}
+            Already have an account?{" "}
             <a className="text-primary hover:underline" href="/login">
               Login
             </a>
           </small>
-
-          {/* divider */}
-          <div id="or" className='text-sm'> OR </div>
         </div>
-
-        <div className='w-full'>
-          <button onClick={()=>alert('working on it')} className='w-full py-3 px-6 rounded-md item-center bg-black text-white font-medium border border-white'>
-            Google
-          </button>
-        </div>
-
       </div>
 
       {/* star move animation */}

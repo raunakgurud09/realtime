@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { useAuth } from '../context/AuthContext'
 import { FaEye } from 'react-icons/fa6'
 import { TTestUsers, testUsers } from '../data'
+import { useNavigate } from 'react-router-dom'
 
 export const Login = () => {
 
@@ -11,11 +12,12 @@ export const Login = () => {
   const [users, setUsers] = useState<TTestUsers[]>(testUsers)
 
   const handleRemoveUser = (id: number) => {
-    // TODO: fix 
-    // Both clear if clicked on 2
     setUsers((u) => u.filter((_, index) => index === id));
     console.log(users)
   }
+
+
+  const navigate = useNavigate();
 
 
   const [data, setData] = useState({
@@ -48,10 +50,10 @@ export const Login = () => {
           ))
         }
       </div>
-      <div className="absolute left-0 z-30 h-screen max-w-2xl w-full p-8 px-28 flex justify-center items-start gap-5 flex-col bg-dark shadow-md bg-black">
+      <div className="absolute left-0 z-30  border-r-[1px] border-r-gray-600 h-screen max-w-2xl w-full p-8 px-28 flex justify-center items-start gap-5 flex-col bg-dark shadow-md bg-black">
 
         <div className='flex flex-col item-start'>
-          <h1 className="text-4xl flex-col font-bold text-violet-600">
+          <h1 className="text-4xl flex-col font-bold text-violet-600 cursor-pointer" onClick={() => navigate('/')}>
             Realtime
           </h1>
           <p className='text-xs font-medium text-white/80'>Welcome! Sign in to your account</p>
@@ -104,17 +106,7 @@ export const Login = () => {
               Register
             </a>
           </small>
-
-          {/* divider */}
-          <div id="or" className='text-sm'> OR </div>
         </div>
-
-        <div className='w-full'>
-          <button onClick={() => alert('working on it')} className='w-full py-3 px-6 rounded-md item-center bg-black text-white font-medium border border-white'>
-            Google
-          </button>
-        </div>
-
       </div>
 
       {/* stars move */}

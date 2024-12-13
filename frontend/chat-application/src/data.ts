@@ -7,12 +7,12 @@ export type TTestUsers = {
 export const testUsers: TTestUsers[] = [
   {
     _id: 1,
-    username: "test_user_1",
-    password: "testpassword123",
+    username: "user1",
+    password: "Testpass1",
   },
   {
     _id: 2,
-    username: "test_user_2",
-    password: "testpassword123",
+    username: "user2",
+    password: "Testpass1",
   },
 ];
