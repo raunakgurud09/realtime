@@ -11,8 +11,10 @@ import { useAuth } from "../../context/AuthContext";
 
 export function MyMenu({
   setOpenAddChat,
+  setOpenProfileEdit,
 }: {
   setOpenAddChat: Dispatch<SetStateAction<boolean>>;
+  setOpenProfileEdit: Dispatch<SetStateAction<boolean>>;
 }) {
   const { logout } = useAuth();
 
@@ -23,7 +25,9 @@ export function MyMenu({
   return (
     <Menu>
       <Menu.Button className="">
-        <HiDotsVertical size={20} />
+        <div className="rounded-full cursor-pointer border-none hover:bg-blue-200/5 text-white p-3 flex flex-shrink-0">
+          <HiDotsVertical size={20} />
+        </div>
       </Menu.Button>
       <Menu.Items className="absolute z-20 flex flex-col top-16 cursor-pointer right-5 border-[0.1px] border-white/50 rounded-md bg-zinc-800 w-60">
         <div className="border-b border-white/50 p-1">
@@ -59,6 +63,7 @@ export function MyMenu({
           <Menu.Item as={Fragment}>
             {({ active }) => (
               <div
+                onClick={() => setOpenProfileEdit(true)}
                 className={`px-4 py-2 flex flex-row item-end justify-start hover:cursor-pointer  rounded-md text-sm font-medium  ${
                   active ? "bg-white text-black" : "text-white"
                 }`}
@@ -79,21 +84,6 @@ export function MyMenu({
                 <PiSignOutBold size={14} className="mr-2 h-5" />
                 <p>Sign Out</p>
               </div>
-            )}
-          </Menu.Item>
-        </div>
-
-        <div className="p-1">
-          <Menu.Item as={Fragment}>
-            {({ active }) => (
-              <p
-                // href={link.href}
-                className={`px-4 py-2 hover:cursor-pointer  rounded-md text-sm font-medium  ${
-                  active ? "bg-red-600 text-white" : "text-white"
-                }`}
-              >
-                Delete
-              </p>
             )}
           </Menu.Item>
         </div>

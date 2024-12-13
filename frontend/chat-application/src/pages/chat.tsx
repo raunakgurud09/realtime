@@ -1,4 +1,3 @@
-
 import { useCallback, useEffect, useRef, useState } from "react";
 import { getChatMessages, getUserChats, sendMessage } from "../utils/axios";
 
@@ -7,7 +6,6 @@ import { IoMdSend } from "react-icons/io";
 import { GoPaperclip } from "react-icons/go";
 import { MdVideoCall } from "react-icons/md";
 
-
 import ChatItem from "../components/chat/ChatItem";
 import MessageItem from "../components/chat/MessageItem";
 import Typing from "../components/chat/Typing";
@@ -15,11 +13,7 @@ import Input from "../components/Input";
 import { useAuth } from "../context/AuthContext";
 import { useSocket } from "../context/SocketContext";
 
-import {
-  classNames,
-  getChatObjectMetadata,
-  requestHandler,
-} from "../utils";
+import { classNames, getChatObjectMetadata, requestHandler } from "../utils";
 import { ChatListItemInterface, ChatMessageInterface } from "../interface/chat";
 import { LocalStorage } from "../utils/LocalStorage";
 import AddChatModal from "../components/chat/AddChatModal";
@@ -38,7 +32,7 @@ const STOP_TYPING_EVENT = "stopTyping";
 const MESSAGE_RECEIVED_EVENT = "messageReceived";
 const LEAVE_CHAT_EVENT = "leaveChat";
 const UPDATE_GROUP_NAME_EVENT = "updateGroupName";
-const INCOMING_CALL_EVENT = 'incomingCallEvent'
+const INCOMING_CALL_EVENT = "incomingCallEvent";
 
 export const Chat = () => {
   const { user } = useAuth();
@@ -48,9 +42,9 @@ export const Chat = () => {
 
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  const [openAddChat, setOpenAddChat] = useState(false)
-  const [openVideoCall, setOpenVideoCall] = useState(false)
-  const [openProfileEdit, setOpenProfileEdit] = useState(false)
+  const [openAddChat, setOpenAddChat] = useState(false);
+  const [openVideoCall, setOpenVideoCall] = useState(false);
+  const [openProfileEdit, setOpenProfileEdit] = useState(false);
 
   const [isConnected, setIsConnected] = useState(false);
 
@@ -71,8 +65,8 @@ export const Chat = () => {
 
   const [attachedFiles, setAttachedFiles] = useState<File[]>([]);
 
-  const [incomingCall, setIncomingCall] = useState(false)
-  const [callRoomId, setCallRoomId] = useState<string>('')
+  const [incomingCall, setIncomingCall] = useState(false);
+  const [callRoomId, setCallRoomId] = useState<string>("");
 
   /**
    *  A  function to update the last message of a specified chat to update the chat list
@@ -81,7 +75,6 @@ export const Chat = () => {
     chatToUpdateId: string,
     message: ChatMessageInterface
   ) => {
-
     const chatToUpdate = chats.find((chat) => chat._id === chatToUpdateId)!;
 
     chatToUpdate.lastMessage = message;
@@ -229,12 +222,14 @@ export const Chat = () => {
   //   return
   // }
 
-  const onIncomingCall = useCallback(async (data: { chatId: string, roomId: string }) => {
-    setIncomingCall(true)
-    console.log(data.roomId)
-    setCallRoomId(data.roomId)
-  }, []);
-
+  const onIncomingCall = useCallback(
+    async (data: { chatId: string; roomId: string }) => {
+      setIncomingCall(true);
+      console.log(data.roomId);
+      setCallRoomId(data.roomId);
+    },
+    []
+  );
 
   // This function handles the event when a user leaves a chat.
   const onChatLeave = (chat: ChatListItemInterface) => {
@@ -250,11 +245,9 @@ export const Chat = () => {
   };
 
   const handleViewCall = () => {
-    console.log('View click')
-    handleSubmitForm(callRoomId)
-  }
-
-
+    console.log("View click");
+    handleSubmitForm(callRoomId);
+  };
 
   const handleSubmitForm = useCallback(
     (room: string) => {
@@ -264,7 +257,7 @@ export const Chat = () => {
   );
 
   const handleJoinRoom = useCallback(
-    (data: { email: string, room: string | number }) => {
+    (data: { email: string; room: string | number }) => {
       const { room } = data;
 
       navigate(`/room/${room}`);
@@ -279,7 +272,6 @@ export const Chat = () => {
       io.off("room:join", handleJoinRoom);
     };
   }, [io, handleJoinRoom]);
-
 
   // Function to handle changes in group name
   const onGroupNameChange = (chat: ChatListItemInterface) => {
@@ -353,7 +345,6 @@ export const Chat = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [socket, chats]);
 
-
   return (
     <>
       <AddChatModal
@@ -366,23 +357,18 @@ export const Chat = () => {
         }}
       />
 
-
       <div className="w-full justify-between items-stretch h-screen flex flex-shrink-0 overflow-y-hidden">
-
         {/* All chats section */}
         <div className="w-3/12 relative ring-white overflow-y-auto">
-
           {/* profile icon */}
           <ProfileEditModal
             open={openProfileEdit}
             onClose={() => {
-              setOpenProfileEdit(false)
+              setOpenProfileEdit(false);
             }}
           />
           <div className="h-20 border-b border-white/20 my-[9px] px-4 flex justify-between  items-center flex-row">
-            <button
-              onClick={() => setOpenProfileEdit(true)}
-            >
+            <button onClick={() => setOpenProfileEdit(true)}>
               <img
                 className="h-12 w-12 rounded-full flex flex-shrink-0 object-cover"
                 src={user?.avatar.url}
@@ -392,19 +378,16 @@ export const Chat = () => {
               />
             </button>
             <div className="flex flex-row justify-center items-center gap-1">
-
               <button
                 onClick={() => setOpenAddChat(true)}
                 className="rounded-full border-none -0 hover:bg-blue-200/5 focus:bg-blue-200/5 text-white p-3 flex flex-shrink-0"
               >
                 <LuMessageSquarePlus size={20} />
               </button>
-
-              <div
-                className="rounded-full cursor-pointer border-none hover:bg-blue-200/5 text-white p-3 flex flex-shrink-0"
-              >
-                <MyMenu setOpenAddChat={setOpenAddChat} />
-              </div>
+              <MyMenu
+                setOpenAddChat={setOpenAddChat}
+                setOpenProfileEdit={setOpenProfileEdit}
+              />
             </div>
           </div>
 
@@ -432,8 +415,8 @@ export const Chat = () => {
                 .filter((chat) =>
                   localSearchQuery
                     ? getChatObjectMetadata(chat, user!)
-                      .title?.toLocaleLowerCase()
-                      ?.includes(localSearchQuery)
+                        .title?.toLocaleLowerCase()
+                        ?.includes(localSearchQuery)
                     : true
                 )
                 .map((chat) => {
@@ -505,13 +488,18 @@ export const Chat = () => {
                     ) : (
                       <img
                         className="h-14 w-14 rounded-full flex flex-shrink-0 object-cover bg-white"
-                        src={getChatObjectMetadata(currentChat.current, user!).avatar
+                        src={
+                          getChatObjectMetadata(currentChat.current, user!)
+                            .avatar
                         }
                       />
                     )}
                     <div>
                       <p className="font-bold">
-                        {getChatObjectMetadata(currentChat.current, user!).title}
+                        {
+                          getChatObjectMetadata(currentChat.current, user!)
+                            .title
+                        }
                       </p>
                       <small className="text-zinc-400">
                         {
@@ -519,19 +507,27 @@ export const Chat = () => {
                             .description
                         }
                       </small>
-                      <div className="text-xs">{isTyping ? <p>Typing...</p> : null}</div>
+                      <div className="text-xs">
+                        {isTyping ? <p>Typing...</p> : null}
+                      </div>
                     </div>
                   </div>
 
                   <AddVideoCall
                     open={openVideoCall}
                     onClose={() => {
-                      setOpenVideoCall(false)
+                      setOpenVideoCall(false);
                     }}
                     currentChat={currentChat}
-                    rEmail={getChatObjectMetadata(currentChat.current, user!).description || ""}
+                    rEmail={
+                      getChatObjectMetadata(currentChat.current, user!)
+                        .description || ""
+                    }
                   />
-                  <button onClick={() => setOpenVideoCall(true)} className="px-6 py-2 rounded-full hover:bg-blue-200/10 cursor-pointer">
+                  <button
+                    onClick={() => setOpenVideoCall(true)}
+                    className="px-6 py-2 rounded-full hover:bg-blue-200/10 cursor-pointer"
+                  >
                     <MdVideoCall size={30} />
                   </button>
                 </div>
@@ -565,22 +561,24 @@ export const Chat = () => {
                   </>
                 )}
               </div>
-              {
-                incomingCall && (
-                  <div className="absolute right-0 top-[90px] h-24  w-72 bg-black border rounded-md m-3">
-
-                    <div className="w-full h-max p-3">
-                      <p className="font-bold text-center">Incoming Call</p>
-                    </div>
-                    <div className="w-full flex items-start justify-evenly">
-                      <button className="w-1/3 border m-1 rounded-md px-4 py-1">Decline</button>
-                      <button
-                        onClick={handleViewCall}
-                        className="w-1/3 border m-1 rounded-md px-4 py-1">View</button>
-                    </div>
+              {incomingCall && (
+                <div className="absolute right-0 top-[90px] h-24  w-72 bg-black border rounded-md m-3">
+                  <div className="w-full h-max p-3">
+                    <p className="font-bold text-center">Incoming Call</p>
                   </div>
-                )
-              }
+                  <div className="w-full flex items-start justify-evenly">
+                    <button className="w-1/3 border m-1 rounded-md px-4 py-1">
+                      Decline
+                    </button>
+                    <button
+                      onClick={handleViewCall}
+                      className="w-1/3 border m-1 rounded-md px-4 py-1"
+                    >
+                      View
+                    </button>
+                  </div>
+                </div>
+              )}
               {attachedFiles.length > 0 ? (
                 <div className="grid gap-4 grid-cols-5 p-4 justify-start w-full min-w-fit  bg-black/30">
                   {attachedFiles.map((file, i) => {
@@ -611,31 +609,38 @@ export const Chat = () => {
                   })}
                 </div>
               ) : null}
+
               <div className="sticky top-full p-4 flex justify-between items-center w-full gap-2 border-t-[0.1px] border-white/20">
-                <input
-                  hidden
-                  id="attachments"
-                  type="file"
-                  value=""
-                  multiple
-                  max={5}
-                  onChange={(e) => {
-                    if (e.target.files) {
-                      setAttachedFiles([...e.target.files]);
-                    }
-                  }}
-                />
-                <label
-                  htmlFor="attachments"
-                  className="p-4 rounded-full bg-dark hover:bg-secondary"
-                >
-                  {/* <PaperClipIcon className="w-6 h-6" /> */}
-                  <GoPaperclip size={30} />
-                </label>
+                {/* TODO: add attachment feature */}
+                {false && (
+                  <>
+                    <input
+                      hidden
+                      id="attachments"
+                      type="file"
+                      value=""
+                      multiple
+                      max={5}
+                      onChange={(e) => {
+                        if (e.target.files) {
+                          setAttachedFiles([...e.target.files]);
+                        }
+                      }}
+                    />
+                    <label
+                      htmlFor="attachments"
+                      className="p-4 rounded-full bg-dark hover:bg-secondary"
+                    >
+                      {/* <PaperClipIcon className="w-6 h-6" /> */}
+                      <GoPaperclip size={30} />
+                    </label>
+                  </>
+                )}
+
                 <Input
                   placeholder="Message"
                   // className=""
-                  className="block w-full h-12 pl-10 rounded-md outline outline-[1px] text-white/80  focus:ring-1  drop-shadow-xl placeholder:text-sm placeholder:text-white/30  outline-zinc-400/30  px-5 bg-zinc-800/30 text-white"
+                  className="block w-full h-12 pl-4 rounded-md outline outline-[1px] text-white/80  focus:ring-1  drop-shadow-xl placeholder:text-sm placeholder:text-white/30  outline-zinc-400/30  px-5 bg-zinc-800/30 text-white"
                   value={message}
                   onChange={handleOnMessageChange}
                   onKeyDown={(e) => {
@@ -647,7 +652,7 @@ export const Chat = () => {
                 <button
                   onClick={sendChatMessage}
                   disabled={!message && attachedFiles.length <= 0}
-                  className="p-4 rounded-full bg-dark hover:bg-secondary disabled:opacity-50"
+                  className="p-4 rounded-full bg-dark cursor-pointer hover:bg-secondary disabled:opacity-50"
                 >
                   {/* <PaperAirplaneIcon className="w-6 h-6" /> */}
                   <IoMdSend size={30} />
@@ -664,4 +669,3 @@ export const Chat = () => {
     </>
   );
 };
-
