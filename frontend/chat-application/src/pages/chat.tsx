@@ -265,7 +265,7 @@ export const Chat = () => {
 
   const handleJoinRoom = useCallback(
     (data: { email: string, room: string | number }) => {
-      const {  room } = data;
+      const { room } = data;
 
       navigate(`/room/${room}`);
     },
@@ -401,9 +401,9 @@ export const Chat = () => {
               </button>
 
               <div
-                className="rounded-full border-none hover:bg-blue-200/5 text-white p-3 flex flex-shrink-0"
+                className="rounded-full cursor-pointer border-none hover:bg-blue-200/5 text-white p-3 flex flex-shrink-0"
               >
-                <MyMenu />
+                <MyMenu setOpenAddChat={setOpenAddChat} />
               </div>
             </div>
           </div>

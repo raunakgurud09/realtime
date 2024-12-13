@@ -124,7 +124,7 @@ const AddChatModal: React.FC<{
                   overflow: "inherit",
                 }}
               >
-                <div className="px-6 border-white/50 border-b-[0.1px] pb-6">
+                <div className="px-6 border-white/50 pb-6">
                   <div className="flex justify-between items-center">
                     <Dialog.Title
                       as="h3"

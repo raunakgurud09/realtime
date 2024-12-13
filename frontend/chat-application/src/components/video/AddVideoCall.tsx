@@ -15,6 +15,7 @@ import { createIncomingCall } from "../../utils/axios";
 // import { ChatListItemInterface } from "../../interface/chat";
 import { useSocket } from "../../context/SocketContext";
 import AudioAnalyzer from "../Audio/AudioAnalyzer";
+import { Mic, MicOff, Video, VideoOff } from "lucide-react";
 
 // import { LiveAudioVisualizer } from 'react-audio-visualize';
 
@@ -174,7 +175,7 @@ export const AddVideoCall: React.FC<{
                   overflow: "inherit",
                 }}
               >
-                <div className="px-6 border-white/50 border-b-[0.1px] pb-6">
+                <div className="px-6 border-white/50  pb-6">
                   <div className="flex justify-between items-center">
                     <Dialog.Title
                       as="h3"
@@ -194,7 +195,7 @@ export const AddVideoCall: React.FC<{
 
 
                 <div className="flex flex-col items-center p-4 space-y-8">
-                  <div className="bg-black aspect-video min-h-54">
+                  <div className="bg-black aspect-video min-h-54 relative rounded-lg">
                     {
                       <ReactPlayer
                         playing
@@ -202,27 +203,29 @@ export const AddVideoCall: React.FC<{
                         width=""
                         height="300px"
                         url={myStream ? myStream : ''}
-                        className="aspect-video"
+                        className="aspect-video rounded-lg"
                       />
                     }
-
+                    <div className="absolute bottom-4 left-4">
+                      {myStream && audio && <AudioAnalyzer audio={myStream} />}
+                    </div>
 
                   </div>
-                  <div className="flex">
+                  <div className="flex gap-4">
                     <button
                       onClick={handleToggleAudio}
-                      className={`h-14 w-14 rounded-full bg-green-600 ${audio ? "bg-red-600" : ""}`}
+                      className={`h-14 w-14 flex items-center justify-center rounded-full bg-green-600 ${!audio ? "bg-red-600" : ""}`}
                     >
-                      {audio ? "Mute" : "Unmute"}
+                      {!audio ? <MicOff /> : <Mic />}
                     </button>
                     <button
                       onClick={handleToggleVideo}
-                      className={`h-14 w-14 rounded-full bg-green-600 ${video ? "bg-red-600" : ""
+                      className={`h-14 w-14 flex items-center justify-center rounded-full bg-green-600 ${!video ? "bg-red-600" : ""
                         }`}
                     >
-                      {video ? "Stop" : "Start"}
+                      {!video ? <VideoOff /> : <Video />}
                     </button>
-                    {myStream && <AudioAnalyzer audio={myStream} />}
+
                   </div>
                 </div>
 
@@ -232,7 +235,7 @@ export const AddVideoCall: React.FC<{
                     onClick={createNewCall}
                     className="w-1/2 bg-violet-600/80 text-white rounded-md px-4 py-2 font-medium border-2  border-violet-900"
                   >
-                    Create call
+                    Call
                   </button>
                 </div>
               </Dialog.Panel>
