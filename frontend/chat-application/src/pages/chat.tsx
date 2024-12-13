@@ -22,6 +22,7 @@ import { ProfileEditModal } from "../components/chat/ProfileEditModal";
 import { BiSearch } from "react-icons/bi";
 import { AddVideoCall } from "../components/video/AddVideoCall";
 import { useNavigate } from "react-router-dom";
+import { PhoneCall } from "lucide-react";
 
 const CONNECTED_EVENT = "connected";
 const DISCONNECT_EVENT = "disconnect";
@@ -562,19 +563,22 @@ export const Chat = () => {
                 )}
               </div>
               {incomingCall && (
-                <div className="absolute right-0 top-[90px] h-24  w-72 bg-black border rounded-md m-3">
-                  <div className="w-full h-max p-3">
-                    <p className="font-bold text-center">Incoming Call</p>
+                <div className="absolute right-0 top-[90px] flex flex-col p-2 w-72 bg-black border rounded-md m-3 gap-6">
+                  <div className="w-full mt-2">
+                    <p className="font-bold text-xl text-center flex gap-2 items-center justify-start">
+                      <PhoneCall size={20} />
+                      Incoming call
+                    </p>
                   </div>
-                  <div className="w-full flex items-start justify-evenly">
-                    <button className="w-1/3 border m-1 rounded-md px-4 py-1">
-                      Decline
-                    </button>
+                  <div className="w-full flex flex-col items-start justify-evenly">
                     <button
                       onClick={handleViewCall}
-                      className="w-1/3 border m-1 rounded-md px-4 py-1"
+                      className="w-[98%] bg-green-500 hover:bg-green-600 m-1 rounded-md px-4 py-1"
                     >
                       View
+                    </button>
+                    <button className="w-[98%] bg-red-500 hover:bg-red-600 m-1 rounded-md px-4 py-1">
+                      Decline
                     </button>
                   </div>
                 </div>

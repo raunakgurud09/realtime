@@ -1,47 +1,53 @@
-
 import { useEffect, useCallback, useState } from "react";
 // import ReactPlayer from "react-player";
 import peer from "../service/peer";
 import { useSocket } from "../context/SocketContext";
-import { BiDotsVertical, BiMicrophone, BiMicrophoneOff, BiPhoneOff, BiVideo, BiVideoOff } from "react-icons/bi";
+import {
+  BiDotsVertical,
+  BiMicrophone,
+  BiMicrophoneOff,
+  BiPhoneOff,
+  BiVideo,
+  BiVideoOff,
+} from "react-icons/bi";
 import { Time } from "../components/Room/Time";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { VideoPlayer } from "../components/video/VideoPlayer";
+import { LayoutPanelTop } from "lucide-react";
 
 const RoomPage = () => {
   const { io } = useSocket();
   const { user } = useAuth();
 
-  const [myMic, setMyMic] = useState(true)
-  const [myVid, setMyVid] = useState(true)
+  const [myMic, setMyMic] = useState(true);
+  const [myVid, setMyVid] = useState(true);
 
-  const [videoPlayerBig, setVideoPlayerBig] = useState(false)
+  const [videoPlayerBig, setVideoPlayerBig] = useState(false);
 
   const [myStream, setMyStream] = useState<MediaStream | null>(null);
 
   // const [endPopup, setEndPopup] = useState<boolean>(false)
 
-  const [isCallReceiver, setIsCallReceiver] = useState(false)
+  const [isCallReceiver, setIsCallReceiver] = useState(false);
 
-  const [remoteSocketId, setRemoteSocketId] = useState<string>('');
-  const [remoteSocketEmail, setRemoteSocketEmail] = useState<string>('')
+  const [remoteSocketId, setRemoteSocketId] = useState<string>("");
+  const [remoteSocketEmail, setRemoteSocketEmail] = useState<string>("");
   const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
 
   const navigate = useNavigate();
 
+  const handleUserJoined = useCallback(
+    async ({ email, id }: { email: string; id: string | any; user: any }) => {
+      console.log(`Email ${email} joined room`);
 
-  const handleUserJoined = useCallback(async ({ email, id }: { email: string, id: string | any, user: any }) => {
-
-    console.log(`Email ${email} joined room`);
-
-    setRemoteSocketId(id);
-    setRemoteSocketEmail(email)
-
-  }, []);
+      setRemoteSocketId(id);
+      setRemoteSocketEmail(email);
+    },
+    []
+  );
 
   const handleCallUser = useCallback(async () => {
-
     setMyStream(myStream);
 
     const offer = await peer.getOffer();
@@ -50,22 +56,24 @@ const RoomPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [remoteSocketId, io]);
 
-
-
   const handleIncomingCall = useCallback(
-    async ({ from, offer, email }: { from: string, email: string, offer: RTCSessionDescription }) => {
-
+    async ({
+      from,
+      offer,
+      email,
+    }: {
+      from: string;
+      email: string;
+      offer: RTCSessionDescription;
+    }) => {
       setRemoteSocketId(from);
-      setRemoteSocketEmail(email)
-      setIsCallReceiver(true)
+      setRemoteSocketEmail(email);
+      setIsCallReceiver(true);
 
-
-
-      console.log(`Incoming Call`, from,);
+      console.log(`Incoming Call`, from);
       const ans = await peer.getAnswer(offer);
 
       io.emit("call:accepted", { to: from, ans });
-
     },
     [io]
   );
@@ -73,15 +81,14 @@ const RoomPage = () => {
   const sendStreams = useCallback(() => {
     if (!myStream) return;
     for (const track of myStream.getTracks()) {
-      console.log(track)
+      console.log(track);
       peer.peer?.addTrack(track, myStream);
     }
   }, [myStream]);
 
   const handleCallAccepted = useCallback(
-    ({ from, ans }: { from: string, ans: RTCSessionDescription }) => {
-
-      console.log(from)
+    ({ from, ans }: { from: string; ans: RTCSessionDescription }) => {
+      console.log(from);
       peer.setLocalDescription(ans);
 
       console.log("Call Accepted!");
@@ -104,34 +111,37 @@ const RoomPage = () => {
   }, [handleNegoNeeded]);
 
   const handleNegoNeedIncoming = useCallback(
-    async ({ from, offer }: { from: string, offer: RTCSessionDescription }) => {
+    async ({ from, offer }: { from: string; offer: RTCSessionDescription }) => {
       const ans = await peer.getAnswer(offer);
       io.emit("peer:nego:done", { to: from, ans });
     },
     [io]
   );
 
-  const handleNegoNeedFinal = useCallback(async ({ ans }: { ans: RTCSessionDescription }) => {
-    await peer.setLocalDescription(ans);
-  }, []);
+  const [showTopBanner, setShowTopBanner] = useState(true);
+
+  const handleNegoNeedFinal = useCallback(
+    async ({ ans }: { ans: RTCSessionDescription }) => {
+      await peer.setLocalDescription(ans);
+      setShowTopBanner(false);
+    },
+    []
+  );
 
   const handleToggleVideoSwitch = () => {
-    setMyVid(prev => !prev)
-
-    
-  }
+    setMyVid((prev) => !prev);
+  };
 
   const handleToggleAudioSwitch = () => {
-    setMyMic(prev => !prev)
-  }
+    setMyMic((prev) => !prev);
+  };
 
   const handleSwitchVideoPlayer = () => {
-    setVideoPlayerBig(prev => !prev)
-  }
+    setVideoPlayerBig((prev) => !prev);
+  };
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const handleCallLeave = () => {
-
     if (myStream) {
       myStream.getTracks().forEach((track: any) => track.stop());
     }
@@ -141,13 +151,11 @@ const RoomPage = () => {
 
     // create a session end popup
     // cleanup anything remaining
-    console.log('end popup')
+    console.log("end popup");
 
-    io.emit("call:ended", { to: remoteSocketId, end: 'abc' });
+    io.emit("call:ended", { to: remoteSocketId, end: "abc" });
     navigate(`/chat`);
-  }
-
-
+  };
 
   // useEffect(() => {
   // handleCallUser()
@@ -160,7 +168,6 @@ const RoomPage = () => {
 
   useEffect(() => {
     const initStream = async () => {
-
       try {
         const stream = await navigator.mediaDevices.getUserMedia({
           audio: true,
@@ -178,23 +185,21 @@ const RoomPage = () => {
     initStream();
 
     return () => {
-
       if (myStream) {
         myStream.getTracks().forEach((track: any) => track.stop());
       }
       if (remoteStream) {
         remoteStream.getTracks().forEach((track: any) => track.stop());
       }
-      console.log('un-mount')
+      console.log("un-mount");
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-
   useEffect(() => {
     peer.peer?.addEventListener("track", async (ev) => {
       const remoteStream = ev.streams;
-      
+
       setRemoteStream(remoteStream[0]);
     });
   }, []);
@@ -205,7 +210,7 @@ const RoomPage = () => {
     io.on("call:accepted", handleCallAccepted);
     io.on("peer:nego:needed", handleNegoNeedIncoming);
     io.on("peer:nego:final", handleNegoNeedFinal);
-    io.on("call:ended", handleCallLeave)
+    io.on("call:ended", handleCallLeave);
 
     return () => {
       io.off("user:joined", handleUserJoined);
@@ -213,7 +218,7 @@ const RoomPage = () => {
       io.off("call:accepted", handleCallAccepted);
       io.off("peer:nego:needed", handleNegoNeedIncoming);
       io.off("peer:nego:final", handleNegoNeedFinal);
-      io.off("call:ended", handleCallLeave)
+      io.off("call:ended", handleCallLeave);
     };
   }, [
     io,
@@ -222,25 +227,39 @@ const RoomPage = () => {
     handleCallAccepted,
     handleNegoNeedIncoming,
     handleNegoNeedFinal,
-    handleCallLeave
+    handleCallLeave,
   ]);
-
 
   return (
     <div>
-
-      <div className="relative ">
-
-        <div className="space-x-4 h-12 bg-green-500 w-full absolute top-0 z-10 flex items-center justify-center py-2">
-          <h4 className="font-semibold text-xl">{remoteSocketId ? "Connected" : "Waiting to join..."}</h4>
-          {myStream && isCallReceiver && <button className="px-6 py-1 border border-white rounded-md" onClick={sendStreams}>Accept</button>}
-          {remoteSocketId && !isCallReceiver && <button className="px-6 py-1 border border-white rounded-md" onClick={handleCallUser}>CALL</button>}
-        </div>
+      <div className="relative">
+        {showTopBanner && (
+          <div className="space-x-4 h-12 bg-green-500 w-full absolute top-0 z-10 flex items-center justify-center py-2">
+            <h4 className="font-semibold text-xl">
+              {remoteSocketId ? "Connected" : "Waiting to join..."}
+            </h4>
+            {myStream && isCallReceiver && (
+              <button
+                className="px-6 py-1 border border-white rounded-md"
+                onClick={sendStreams}
+              >
+                Accept
+              </button>
+            )}
+            {remoteSocketId && !isCallReceiver && (
+              <button
+                className="px-6 py-1 border border-white rounded-md"
+                onClick={handleCallUser}
+              >
+                CALL
+              </button>
+            )}
+          </div>
+        )}
 
         <div className="bg-black relative h-screen pt-16">
-
           <VideoPlayer
-            email={user ? user?.email : ''}
+            email={user ? user?.email : ""}
             stream={myStream}
             xl={videoPlayerBig}
           />
@@ -250,9 +269,7 @@ const RoomPage = () => {
             xl={!videoPlayerBig}
             remote
           />
-
         </div>
-
       </div>
 
       <div className="absolute w-full h-20  p-4 bottom-0 flex items-center justify-between">
@@ -260,58 +277,56 @@ const RoomPage = () => {
           <Time />
         </div>
 
-        <div className="w-[300px] h-14 bg-white/10 rounded-full flex items-center justify-between p-2">
-          <button
-            onClick={handleCallLeave}
-            className="bg-red-600 px-4 py-2 rounded-full">
-            <BiPhoneOff size={18} />
-          </button>
-
+        <div className="w-fit  bg-white/10 rounded-full flex items-center justify-center p-2">
           <div className="space-x-4">
-            {
-              myMic
-                ? (
-                  <button
-                    onClick={handleToggleAudioSwitch}
-                    className="px-4 py-2 rounded-full bg-red-600"
-                  >
-                    <BiMicrophoneOff />
-                  </button>
-                )
-                : (<button
-                  onClick={handleToggleAudioSwitch}
-                  className="px-4 py-2 rounded-full bg-green-600"
-                >
-                  <BiMicrophone />
-                </button>)
-            }
-            {
-              myVid
-                ?
-                <button
-                  onClick={handleToggleVideoSwitch}
-                  className="bg-red-600 px-4 py-2 rounded-full">
-                  <BiVideoOff />
-                </button>
-                :
-                <button
-                  onClick={handleToggleVideoSwitch}
-                  className="bg-green-600 px-4 py-2 rounded-full">
-                  <BiVideo />
-                </button>
-            }
-
+            <button
+              onClick={handleCallLeave}
+              className="bg-red-600 px-4 py-2 rounded-full"
+            >
+              <BiPhoneOff size={16} />
+            </button>
+            {myMic ? (
+              <button
+                onClick={handleToggleAudioSwitch}
+                className="px-4 py-2 rounded-full bg-red-600"
+              >
+                <BiMicrophoneOff />
+              </button>
+            ) : (
+              <button
+                onClick={handleToggleAudioSwitch}
+                className="px-4 py-2 rounded-full bg-green-600"
+              >
+                <BiMicrophone />
+              </button>
+            )}
+            {myVid ? (
+              <button
+                onClick={handleToggleVideoSwitch}
+                className="bg-red-600 px-4 py-2 rounded-full"
+              >
+                <BiVideoOff />
+              </button>
+            ) : (
+              <button
+                onClick={handleToggleVideoSwitch}
+                className="bg-green-600 px-4 py-2 rounded-full"
+              >
+                <BiVideo />
+              </button>
+            )}
           </div>
-          <button className="bg-white/10 px-2 py-2 rounded-full">
+          {/* <button className="bg-white/10 px-2 py-2 rounded-full">
             <BiDotsVertical size={20} />
-          </button>
+          </button> */}
         </div>
 
         <div>
-          <button onClick={handleSwitchVideoPlayer}>options</button>
+          <button onClick={handleSwitchVideoPlayer}>
+            <LayoutPanelTop />
+          </button>
         </div>
       </div>
-
     </div>
   );
 };
