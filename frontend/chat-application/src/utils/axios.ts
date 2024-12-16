@@ -76,3 +76,7 @@ export const createGroupChat = (data: {
 export const getAvailableUsers = () => {
   return apiClient.get("/chat-app/chats/users");
 };
+
+export const uploadAvatar = (data: any) => {
+  return apiClient.post("/users/avatar", data);
+};

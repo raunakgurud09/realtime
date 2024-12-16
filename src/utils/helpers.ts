@@ -11,7 +11,7 @@ export const getStaticFilePath = (req, filename) => {
 };
 
 export const getLocalPath = (filename) => {
-  return `public/images${filename}`;
+  return `public/images/${filename}`;
 };
 
 export const removeLocalFile = (localPath) => {

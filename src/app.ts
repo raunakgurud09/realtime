@@ -49,12 +49,13 @@ const limiter = rateLimit({
   },
 });
 
-// Apply the rate limiting middleware to all requests
 app.use(limiter);
 
-app.use(express.json({ limit: "16kb" }));
-app.use(express.urlencoded({ extended: true, limit: "16kb" }));
-app.use(express.static("public")); // configure static file to save images locally
+app.use(express.json({ limit: "10mb" }));
+app.use(
+  express.urlencoded({ extended: true, limit: "10mb", parameterLimit: 100000 })
+);
+app.use(express.static("public"));
 app.use(cookieParser());
 
 import healthcheckRouter from "./routes/healthcheck.routes";

@@ -32,6 +32,6 @@ router
 
 router
   .route("/avatar")
-  .patch(verifyJWT, upload.single("avatar"), updateUserAvatar);
+  .post(verifyJWT, upload.single("avatar"), updateUserAvatar);
 
 export default router;
